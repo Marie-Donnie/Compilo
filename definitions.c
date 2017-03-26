@@ -1,51 +1,8 @@
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdbool.h>
 
-/*------------------- DECLARATION -------------------------*/
 
-typedef enum atomType {TERMINAL, NON_TERMINAL} AtomType;
-typedef enum operation {CONC, UNION, STAR, UN, ATOM} Op;
-#define TER_SIZE 10
-#define ARRAY_SIZE 50
+#include "definitions.h"
 
-typedef struct ptr Ptr;
 
-typedef struct sconc {
-  Ptr *left;
-  Ptr *right;
-} Conc;
-
-typedef struct sunion {
-  Ptr *left;
-  Ptr *right;
-} Union;
-
-typedef struct sstar {
-  Ptr *stare;
-} Star;
-
-typedef struct sun {
-  Ptr *une;
-} Un;
-
-typedef struct satom{
-  char *code;
-  int action;
-  AtomType a_type;
-} Atom;
-
-struct ptr{
-  Op op_type;
-  union {
-    Conc *conc;
-    Union *uni;
-    Star *star;
-    Un *un;
-    Atom *atom;
-  } op;
-};
 
 
 /*------------------- GENERATION -------------------------*/
@@ -144,7 +101,7 @@ Ptr* gen_F(){
 
 /*------------------- DESTRUCTION -------------------------*/
 
-void free_ptr(Ptr *p);
+//void free_ptr(Ptr *p);
 
 void free_conc(Conc *c){
   free_ptr(c->left);
@@ -208,8 +165,8 @@ void free_ptr(Ptr *p){
 
 /*------------------- PRINT -------------------------*/
 
-void print_ptr(Ptr *p, int indent);
-void print_atom_type(AtomType at);
+/* void print_ptr(Ptr *p, int indent); */
+/* void print_atom_type(AtomType at); */
 
 void print_indent(int indent){
   for (int i=0; i < indent ; ++i){
@@ -291,29 +248,29 @@ Ptr* scan(char* chaine){
 
 
 
-  int memory_read;    /*this will be used as the variable for the value of the bytes read from the getline function*/
+  /* int memory_read;    /\*this will be used as the variable for the value of the bytes read from the getline function*\/ */
 
-  int nbytes = 200;    /*this is the variable for the number of bytes initially allocated for your stream*/
+  /* int nbytes = 200;    /\*this is the variable for the number of bytes initially allocated for your stream*\/ */
 
-  char *your_string;    /*this is the variable for the character file object used for your stream*/
+  /* char *your_string;    /\*this is the variable for the character file object used for your stream*\/ */
 
-  puts (“Enter stream, or line of text, here:”);    /*prompt for user to enter text*/
+  /* puts (“Enter stream, or line of text, here:”);    /\*prompt for user to enter text*\/ */
 
-  your_string = (char *) malloc (nbytes + 1);    /*note the char cast operator as the pointer used will be a character pointer and also note that it’s added 1 to nbytes for the malloc function; the last character read by getline should be a null character and it’s added the one to account for the last null character that will be read*/
+  /* your_string = (char *) malloc (nbytes + 1);    /\*note the char cast operator as the pointer used will be a character pointer and also note that it’s added 1 to nbytes for the malloc function; the last character read by getline should be a null character and it’s added the one to account for the last null character that will be read*\/ */
 
-  memory_read = getline (&your_string, &nbytes, stdin);     /*the value of memory read will be determined by the return of your getline function*/
+  /* memory_read = getline (&your_string, &nbytes, stdin);     /\*the value of memory read will be determined by the return of your getline function*\/ */
 
-  if (memory_read == -1) { /* if a character is not read by getline, then -1 will be returned*/
-      puts (“Error: only EOF without text read”);    /*displays error no bytes had been read, hence, if -1 had been returned*/
-  }
+  /* if (memory_read == -1) { /\* if a character is not read by getline, then -1 will be returned*\/ */
+  /*     puts (“Error: only EOF without text read”);    /\*displays error no bytes had been read, hence, if -1 had been returned*\/ */
+  /* } */
 
-  else {  /*if -1 had not been returned*/
-    puts (your_string);   /*displays string that had been entered*/
-
-
+  /* else {  /\*if -1 had not been returned*\/ */
+  /*   puts (your_string);   /\*displays string that had been entered*\/ */
 
 
-  }
+
+
+  //}
 
 }
 
@@ -321,101 +278,96 @@ Ptr* scan(char* chaine){
 
 /*------------------- ANALYZE -------------------------*/
 
-bool analyze(Ptr* p){
-  bool ana = true;
-  if (p->op_type == CONC){
-  if (analyze(p->left)){
-  ana = analyze(p->right);
-    }
-    else {
-      ana = false;
-    }
-  }
-  else if (p->op_type == UNION){
-  if (analyze(p->left)){
-      ana = true;
-    }
-    else {
-      ana = analyze(p->right);
-    }
-  }
-  else if (p->op_type == STAR){
-    ana = true;
-    /* while (analyze(p->stare)) {} */
-  }
-  else if (p->op_type == UN){
-    ana = true;
-    /* if (anlyze(p->une)) {} */
-  }
-  else if (p->op_type == ATOM){
-  if (p->atom->a_type == TERMINAL){
-  if (p->atom->code == code){
-  ana = true;
-  if (p->atom->action != 0){
-  go_action(p->action);
+/* bool analyze(Ptr *p){ */
+/*   bool ana = true; */
+/*   if (p->op_type == CONC){ */
+/*   if (analyze(p->left)){ */
+/*   ana = analyze(p->right); */
+/*     } */
+/*     else { */
+/*       ana = false; */
+/*     } */
+/*   } */
+/*   else if (p->op_type == UNION){ */
+/*   if (analyze(p->left)){ */
+/*       ana = true; */
+/*     } */
+/*     else { */
+/*       ana = analyze(p->right); */
+/*     } */
+/*   } */
+/*   else if (p->op_type == STAR){ */
+/*     ana = true; */
+/*     /\* while (analyze(p->stare)) {} *\/ */
+/*   } */
+/*   else if (p->op_type == UN){ */
+/*     ana = true; */
+/*     /\* if (anlyze(p->une)) {} *\/ */
+/*   } */
+/*   else if (p->op_type == ATOM){ */
+/*   if (p->atom->a_type == TERMINAL){ */
+/*   if (p->atom->code == code){ */
+/*   ana = true; */
+/*   if (p->atom->action != 0){ */
+/*   go_action(p->action); */
 
-	}
-      }
-    }
-    if (p->atom->a_type == NON_TERMINAL){
-      if (analyze()){
-      }
-    }
-  }
-  return ana;
-}
+/* 	} */
+/*       } */
+/*     } */
+/*     if (p->atom->a_type == NON_TERMINAL){ */
+/*       if (analyze()){ */
+/*       } */
+/*     } */
+/*   } */
+/*   return ana; */
+/* } */
 
 
 /*------------------- ACTION -------------------------*/
 
-void empiler(*Ptr pile, *Ptr T);
-void depiler(*Ptr pile, *Ptr T);
-void recherche(*char dico, *char atrouver);
 
-void go_action(int action){
+/* void go_action(int action){ */
 
-  *Ptr pile[ARRAY_SIZE];
-  *char DICONT[ARRAY_SIZE];
-  *char DICOT[ARRAY_SIZE];
-  *Ptr T1;
-  *Ptr T2;
+/*   *Ptr pile[ARRAY_SIZE]; */
+/*   *char DICONT[ARRAY_SIZE]; */
+/*   *char DICOT[ARRAY_SIZE]; */
+/*   *Ptr T1; */
+/*   *Ptr T2; */
 
-  if (action == 1){
-    depiler(pile,T1);
-    depiler(pile,T2);
-    A
-  }
-  else if (action == 2){
-    empiler(gen_atom(recherche(DICONT,T1), action, atype));
-  }
-  else if (action == 3){
+/*   if (action == 1){ */
+/*     depiler(pile,T1); */
+/*     depiler(pile,T2); */
+/*     A */
+/*   } */
+/*   else if (action == 2){ */
+/*     empiler(gen_atom(recherche(DICONT,T1), action, atype)); */
+/*   } */
+/*   else if (action == 3){ */
 
-  }
-  else if (action == 4){
+/*   } */
+/*   else if (action == 4){ */
 
-  }
-  else if (action == 5){
+/*   } */
+/*   else if (action == 5){ */
 
-  }
-  else if (action == 6){
+/*   } */
+/*   else if (action == 6){ */
 
-  }
-  else if (action == 7){
+/*   } */
+/*   else if (action == 7){ */
 
-  }
+/*   } */
 
+/* } */
 
+/* void empiler(*Ptr pile, *Ptr T){ */
+/* } */
 
-}
+/* void depiler(*Ptr pile, *Ptr T){ */
+/* } */
 
-void empiler(*Ptr pile, *Ptr T){
-}
-
-void depiler(*Ptr pile, *Ptr T){
-}
-
-void recherche(*char dico, *char atrouver){
-}
+/* void recherche(*char dico, *char atrouver){ */
+/* } */
 
 
 
