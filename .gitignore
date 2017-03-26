@@ -1,5 +1,6 @@
-a.out
+compilo
 analyser.c
 *.bak
 *~
 #*
+backup

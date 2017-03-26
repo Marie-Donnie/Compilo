@@ -368,27 +368,3 @@ Ptr* scan(char* chaine){
 
 /* void recherche(*char dico, *char atrouver){ */
 /* } */
-
-
-
-
-/*------------------- MAIN -------------------------*/
-
-int main(){
-  /* Ptr *a = gen_atom(';', 0, TERMINAL); */
-  /* Ptr *b = gen_atom(';', 0, TERMINAL); */
-  /* Ptr *c = gen_conc(a,b); */
-  /* print_ptr(c, 0); */
-  /* free_ptr(c); */
-
-  Ptr *s = gen_F();
-  print_ptr(s,0);
-  free_ptr(s);
-
-
-  return EXIT_SUCCESS;
-}
-
-
-/* TODO : - scan, analyze*/
-/* G0action -> GPL dans l'arbre*/
