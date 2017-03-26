@@ -7,6 +7,7 @@
 
 typedef enum atomType {TERMINAL, NON_TERMINAL} AtomType;
 typedef enum operation {CONC, UNION, STAR, UN, ATOM} Op;
+typedef enum cod {ELTER, IDNTER} Code;
 #define TER_SIZE 10
 #define ARRAY_SIZE 50
 
@@ -46,6 +47,16 @@ struct ptr{
     Atom *atom;
   } op;
 };
+
+/*------------------- LEXICAL UNIT -------------------------*/
+
+typedef struct sl_u {
+  Code code;
+  int action;
+  AtomType type;
+  char* chaine;
+} Lexical_unit ;
+
 
 /*------------------- GENERATION -------------------------*/
 
@@ -87,9 +98,6 @@ void print_atom(Atom *a, int indent);
 void print_atom_type(AtomType at);
 void print_ptr(Ptr *p, int indent);
 
-/*------------------- SCAN -------------------------*/
-
-Ptr* scan(char* chaine);
 
 /*------------------- ANALYZE -------------------------*/
 

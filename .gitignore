@@ -2,6 +2,6 @@ compilo
 analyser.c
 *.bak
 *~
-#*
+*#*
 backup
 obj
