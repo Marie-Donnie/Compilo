@@ -1,27 +1,26 @@
+#ifndef LEXER_H
+#define LEXER_H
 #include "definitions.h"
 
-typedef enum {ID, ARROW, TER, PLUS, POINT, LB, RB, LP, RP, LPB, RPB, C, SC, EF} TokenType;
+typedef enum {IDENT, ARROW, TER, PLUS, POINT,
+	      L_BRACKET, R_BRACKET, L_PAREN, R_PAREN,
+	      L_PAREN_BAR, R_PAREN_BAR, COMMA, SEMI_COLON,
+	      END_FILE} TokenType;
 typedef struct {
   TokenType type;
   char *str;
 } Token;
 
 
-/*------------------- GENERIC -------------------------*/
-
-int char_count(char *file_name);
-
-
-void eat_space();
-
 /*------------------- CHAR RECOGNITION -------------------------*/
 
-bool might_be_double(char c);
-bool is_double(char c, char cc);
+
+bool is_letter(char c);
+bool is_digit(char c);
 
 
+/*------------------- LEX G0 -------------------------*/
 Token lex(char *string, int *index);
 
 
-/*------------------- SCAN -------------------------*/
-Lexical_unit* scan(char* chaine);
+#endif //LEXER_H
