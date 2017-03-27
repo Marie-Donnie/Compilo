@@ -19,9 +19,8 @@ void eat_space();
 bool might_be_double(char c);
 bool is_double(char c, char cc);
 
-void lexical_unit_gen(Token token);
 
-Token scanner(char *string, int *index);
+Token lex(char *string, int *index);
 
 
 /*------------------- SCAN -------------------------*/

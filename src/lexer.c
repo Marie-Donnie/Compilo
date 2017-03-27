@@ -26,9 +26,7 @@ bool might_be_double(char c){
 	  || c == '&' || c == '+' || c == '-');
 }
 
-void lexical_unit_gen(Token token){};
-
-Token scanner(char *string, int *index){
+Token lex(char *string, int *index){
   Token token;
   token.str = NULL;
   int state = 0;
