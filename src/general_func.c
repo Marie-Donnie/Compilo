@@ -10,7 +10,6 @@ long char_count(FILE *file){
   fseek(file, 0, SEEK_END);
   count = ftell(file);
   fseek(file, index, SEEK_SET);
-  /* clearerr(file); */
   return count;
 }
 
