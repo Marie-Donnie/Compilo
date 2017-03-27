@@ -1,4 +1,5 @@
 #include "lexer.h"
+#include "parser.h"
 #include "general_func.h"
 
 
@@ -20,6 +21,17 @@ void test_lexer(char *buffer){
 void test_g0(){
   char *str = "Ident42 ->       +(|'rter'|)(ident)'abc' ['ab'] '' ,;";
   test_lexer(str);
+}
+
+void test_parser(){
+  size_t i;
+  /* const Set *set = first(gen_star(gen_conc(gen_atom("T",0,NON_TERMINAL), */
+  /* 					   gen_atom("+",0,TERMINAL)))); */
+  /* const Set *set = first(gen_conc(gen_star(gen_conc(gen_atom("T",0,NON_TERMINAL), */
+  /* 						    gen_atom("+",0,TERMINAL))), */
+  /* 				  gen_atom("T2",0,TERMINAL))); */
+  const Set *set = first(gen_E());
+  print_set(set);
 }
 
 
@@ -48,8 +60,6 @@ int main(int argc, char **argv){
   buffer = read_file(path);
   printf("%s\n", buffer);
   test_lexer(buffer);
-
-
-
+  test_parser();
   return EXIT_SUCCESS;
 }

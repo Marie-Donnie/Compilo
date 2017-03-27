@@ -5,17 +5,18 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include "lexer.h"
+#include "general_func.h"
 
 
 typedef struct {
-  Token **set;
+  const void **set;
   size_t size;
-  size_t nb_elem;
 } Set;
 
 Set* empty_set();
-void set_add(Set *set, void *e);
 bool set_is_member(const Set *set, const void *e);
-void set_union(Set *set1, const Set *set2);
+const Set* set_add(const Set *set, const void *e);
+const Set* set_union(const Set *set1, const Set *set2);
+const Set* set_remove(const Set *set, const void *e);
 
 #endif // SETS_H

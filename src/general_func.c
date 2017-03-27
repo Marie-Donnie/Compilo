@@ -25,6 +25,15 @@ char* read_file(char *path){
   return buffer;
 }
 
+void* check_malloc(size_t size){
+  void* ret = malloc(size);
+  if (!ret){
+    fprintf(stderr, "Cannot allocate memory");
+    exit(-1);
+  }
+  return ret;
+}
+
 
 void eat_space(){}
 

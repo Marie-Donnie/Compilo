@@ -4,30 +4,25 @@
 Set* empty_set(){
   Set *set = malloc(sizeof(Set));
   set->size = 0;
-  set->nb_elem = 0;
   set->set = NULL;
   return set;
 }
 
-void set_add(Set *set, void *e){
+const Set* set_add(const Set *set, const void *e){
   if (!set_is_member(set, e)){
-    if (set->nb_elem == set->size){
-      size_t new_size = (set->size == 0 ? 5 : set->size * 2);
-      set->set = realloc(set->set, new_size);
-      if (!set->set){
-	fprintf(stderr, "Cannot allocate memory");
-	exit(-1);
-      }
-      set->size = new_size;
-    }
-    set->set[set->nb_elem] = e;
-    set->nb_elem++;
+    Set *ret_set = empty_set();
+    ret_set->set = check_malloc((set->size+1)*sizeof(e));
+    ret_set->size = set->size + 1;
+    memcpy(ret_set->set, set->set, (set->size)*sizeof(e));
+    ret_set->set[set->size] = e;
+    return ret_set;
   }
+  return set;
 }
 
 bool set_is_member(const Set *set, const void *e){
   size_t i;
-  for (i = 0 ; i < set->nb_elem ; i++){
+  for (i = 0 ; i < set->size ; i++){
     if (set->set[i] == e){
       return true;
     }
@@ -35,9 +30,28 @@ bool set_is_member(const Set *set, const void *e){
   return false;
 }
 
-void set_union(Set *set1, const Set *set2){
-  size_t i;
-  for (i = 0 ; i < set2->nb_elem ; i++){
-    set_add(set1, set2->set[i]);
+const Set* set_union(const Set *set1, const Set *set2){
+  Set *ret_set = empty_set();
+  ret_set->set = check_malloc((set1->size + set2->size)*sizeof(void*));
+  ret_set->size = set1->size + set2->size;
+  memcpy(ret_set->set, set1->set, set1->size*sizeof(void*));
+  memcpy((ret_set->set + set1->size), set2->set, set2->size*sizeof(void*));
+  return ret_set;
+}
+
+const Set* set_remove(const Set *set, const void *e){
+  size_t i, j;
+  if (set_is_member(set, e)){
+    Set *ret_set = empty_set();
+    ret_set->set = check_malloc((set->size-1)*sizeof(e));
+    ret_set->size = set->size - 1;
+    for (i = 0, j = 0 ; i < set->size ; i++){
+      if (set->set[i] != e){
+	ret_set->set[j] = set->set[i];
+	j++;
+      }
+    }
+    return ret_set;
   }
+  return set;
 }
