@@ -1,3 +1,6 @@
+#ifndef DEFINITIONS_H
+#define DEFINITIONS_H
+
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -110,3 +113,5 @@ void depiler(Ptr *pile, Ptr *T);
 void recherche(char *dico, char *atrouver);
 
 void go_action(int action);
+
+#endif // DEFINITIONS_H
