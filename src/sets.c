@@ -9,8 +9,8 @@ Set* empty_set(){
   return set;
 }
 
-void set_add(Set *set, Token *token){
-  if (!set_is_member(set, token)){
+void set_add(Set *set, void *e){
+  if (!set_is_member(set, e)){
     if (set->nb_elem == set->size){
       size_t new_size = (set->size == 0 ? 5 : set->size * 2);
       set->set = realloc(set->set, new_size);
@@ -20,15 +20,15 @@ void set_add(Set *set, Token *token){
       }
       set->size = new_size;
     }
-    set->set[set->nb_elem] = token;
+    set->set[set->nb_elem] = e;
     set->nb_elem++;
   }
 }
 
-bool set_is_member(const Set *set, const Token *token){
+bool set_is_member(const Set *set, const void *e){
   size_t i;
   for (i = 0 ; i < set->nb_elem ; i++){
-    if (set->set[i] == token){
+    if (set->set[i] == e){
       return true;
     }
   }
