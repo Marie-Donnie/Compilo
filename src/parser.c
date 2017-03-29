@@ -3,7 +3,7 @@
 
 const char *EPS = "eps";
 const char *EF = "";
-
+map_t *parsing_table = NULL;
 map_t *cache_first = NULL;
 
 bool set_is_equal(const void *a, const void *b){
@@ -135,4 +135,60 @@ int index_of(char *ter, Vector *v){
     }
   }
   return -1;
+}
+
+
+/*------------------- PARSING_TABLE -------------------------*/
+
+void init_parsing_table(){
+  size_t i, j;
+  parsing_table = hashmap_new();
+  for (i = 0 ; i < get_A_length() ; i++){
+    Rule *r = get_rule(i);
+    const Set *s = first(r->head);
+    for (j = 0 ; j < s->size ; j++){
+      if (!is_equal(s->set[j], EPS)){
+	parsing_table_put(r->head, (char*)s->set[j], r);
+      }
+    }
+    if (set_is_member(s, EPS)){
+      const Set *set = follow(r->head);
+      for (j = 0; j < set->size ; j++){
+	parsing_table_put(r->head, (char*)set->set[j], r);
+      }
+    }
+  }
+
+}
+
+void parsing_table_put(char *head, char *ter, Rule *r){
+  map_t *row;
+  int error;
+  error = hashmap_get(parsing_table, head, (void**)&row);
+  if (error == MAP_MISSING){
+    row = hashmap_new();
+    hashmap_put(parsing_table, head, row);
+  }
+  hashmap_put(row, ter, r);
+}
+
+Rule* parsing_table_get(char *head, char *ter){
+  map_t *row;
+  int ret;
+  Rule *r;
+  ret = hashmap_get(parsing_table, head, (void**)&row);
+  if (ret == MAP_OK){
+    ret = hashmap_get(row, ter, (void**)&r);
+    if (ret == MAP_OK){
+      return r;
+    }
+    else {
+      fprintf(stderr, "Column %s missing from row %s in parsing table.\n", ter, head);
+      exit(-1);
+    }
+  }
+  else {
+    fprintf(stderr, "Row %s missing in parsing table.\n", head);
+    exit(-1);
+  }
 }

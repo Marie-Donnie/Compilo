@@ -55,10 +55,17 @@ void test_parser(){
   /* const Set *set = first(gen_conc(gen_star(gen_conc(gen_atom("T",0,NON_TERMINAL), */
   /* 						    gen_atom("+",0,TERMINAL))), */
   /* 				  gen_atom("T2",0,TERMINAL))); */
+  printf("Testing first:\n");
   const Set *set = first("E");
   print_set(set);
+  printf("Testing follow:\n");
   const Set *set2 = follow("E");
   print_set(set2);
+  printf("Testing parsing table:\n");
+  init_parsing_table();
+  Rule *r = parsing_table_get("F", "[");
+  printf("Head for M[F,'[']:%s.\n", r->head);
+  print_ptr(r->body, 0);
 }
 
 void test_leaves(){
