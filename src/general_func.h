@@ -4,6 +4,11 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+/** \fn long char_count(FILE *file)
+ *  \brief Counts the characters in a file.
+ *  \param file the file pointer to the file to process
+ *  \return the number of characters
+ */
 long char_count(FILE *file);
 char* read_file(char *path);
 void* check_malloc(size_t size);

@@ -7,7 +7,7 @@
 
 
 const Set* first(Ptr *p);
-Set* follow(Ptr *p);
+const Set* follow(Ptr *p);
 const Set* set_union_eps(const Set *set1, const Set *set2);
 Ptr* get_production(char *code);
 void print_set(const Set *set);

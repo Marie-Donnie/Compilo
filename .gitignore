@@ -5,3 +5,5 @@ analyser.c
 *#*
 backup
 obj
+html
+latex

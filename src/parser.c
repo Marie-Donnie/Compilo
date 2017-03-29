@@ -25,7 +25,9 @@ const Set* first(Ptr *p){
   return empty_set();
 }
 
-//Set follow(Ptr *ptr);
+const Set* follow(Ptr *p){
+
+}
 
 
 const Set* set_union_eps(const Set *set1, const Set *set2){
