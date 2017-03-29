@@ -56,10 +56,10 @@ void test_parser(){
   /* 						    gen_atom("+",0,TERMINAL))), */
   /* 				  gen_atom("T2",0,TERMINAL))); */
   printf("Testing first:\n");
-  const Set *set = first("E");
+  Set *set = first("E");
   print_set(set);
   printf("Testing follow:\n");
-  const Set *set2 = follow("E");
+  Set *set2 = follow("E");
   print_set(set2);
   printf("Testing parsing table:\n");
   init_parsing_table();

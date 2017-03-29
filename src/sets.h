@@ -9,16 +9,16 @@
 
 
 typedef struct {
-  const void **set;
+  void **set;
   size_t size;
 } Set;
 
 Set* empty_set();
-bool set_is_member(const Set *set, const void *e);
-const Set* set_add(const Set *set, const void *e);
-const Set* set_union(const Set *set1, const Set *set2);
-const Set* set_remove(const Set *set, const void *e);
+bool set_is_member(Set *set, void *e);
+Set* set_add(Set *set, void *e);
+Set* set_union(Set *set1, Set *set2);
+Set* set_remove(Set *set, void *e);
 
-extern bool set_is_equal(const void *a, const void *b);
+extern bool set_is_equal(void *a, void *b);
 
 #endif // SETS_H

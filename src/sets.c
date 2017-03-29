@@ -8,7 +8,7 @@ Set* empty_set(){
   return set;
 }
 
-const Set* set_add(const Set *set, const void *e){
+Set* set_add(Set *set, void *e){
   if (!set_is_member(set, e)){
     Set *ret_set = empty_set();
     ret_set->set = check_malloc((set->size+1)*sizeof(e));
@@ -20,7 +20,7 @@ const Set* set_add(const Set *set, const void *e){
   return set;
 }
 
-bool set_is_member(const Set *set, const void *e){
+bool set_is_member(Set *set, void *e){
   size_t i;
   for (i = 0 ; i < set->size ; i++){
     if (set_is_equal(set->set[i], e)){
@@ -30,7 +30,7 @@ bool set_is_member(const Set *set, const void *e){
   return false;
 }
 
-const Set* set_union(const Set *set1, const Set *set2){
+Set* set_union(Set *set1, Set *set2){
   size_t i;
   Set *ret_set = empty_set();
   ret_set->set = check_malloc(set1->size*sizeof(void*));
@@ -42,7 +42,7 @@ const Set* set_union(const Set *set1, const Set *set2){
   return ret_set;
 }
 
-const Set* set_remove(const Set *set, const void *e){
+Set* set_remove(Set *set, void *e){
   size_t i, j;
   if (set_is_member(set, e)){
     Set *ret_set = empty_set();

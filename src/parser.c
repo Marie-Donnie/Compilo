@@ -1,16 +1,16 @@
 #include "parser.h"
 #include <assert.h>
 
-const char *EPS = "eps";
-const char *EF = "";
+char *EPS = "eps";
+char *EF = "";
 map_t *parsing_table = NULL;
 map_t *cache_first = NULL;
 
-bool set_is_equal(const void *a, const void *b){
+bool set_is_equal(void *a, void *b){
   return is_equal((char*)a, (char*)b);
 }
 
-const Set* first(char *head){
+Set* first(char *head){
   Set *s;
   int error;
 
@@ -24,7 +24,7 @@ const Set* first(char *head){
   }
 
   if (hashmap_get(cache_first, head, (void**)&s) == MAP_MISSING) {
-    const Set *set = first_ptr(get_rule_by_head(head)->body);
+    Set *set = first_ptr(get_rule_by_head(head)->body);
     error = hashmap_put(cache_first, head, set);
     if (error != MAP_OK){
       fprintf(stderr, "Problem while adding an element to the hashmap.\n");
@@ -37,7 +37,7 @@ const Set* first(char *head){
   return s;
 }
 
-const Set* first_ptr(Ptr *p){
+Set* first_ptr(Ptr *p){
 
 
   if (p->op_type == ATOM){
@@ -49,7 +49,7 @@ const Set* first_ptr(Ptr *p){
     }
   }
   else if (p->op_type == CONC){
-    const Set *left = first_ptr(p->op.conc->left);
+    Set *left = first_ptr(p->op.conc->left);
     if (set_is_member(left, EPS)) {
       return set_union(set_remove(left, EPS), first_ptr(p->op.conc->right));
     }
@@ -68,10 +68,10 @@ const Set* first_ptr(Ptr *p){
   return empty_set();
 }
 
-const Set* follow(char *head){
+Set* follow(char *head){
   size_t i, j;
   int idx;
-  const Set *s = empty_set();
+  Set *s = empty_set();
   // Rule = S
   if (is_equal(head, get_rule(0)->head)){
     return set_add(s, END_FILE_STR);
@@ -102,7 +102,7 @@ const Set* follow(char *head){
 }
 
 
-const Set* set_union_eps(const Set *set1, const Set *set2){
+Set* set_union_eps(Set *set1, Set *set2){
   if (set_is_member(set1, EPS)){
     return set_union(set_remove(set1, EPS), set2);
   }
@@ -145,14 +145,14 @@ void init_parsing_table(){
   parsing_table = hashmap_new();
   for (i = 0 ; i < get_A_length() ; i++){
     Rule *r = get_rule(i);
-    const Set *s = first(r->head);
+    Set *s = first(r->head);
     for (j = 0 ; j < s->size ; j++){
       if (!is_equal(s->set[j], EPS)){
 	parsing_table_put(r->head, (char*)s->set[j], r);
       }
     }
     if (set_is_member(s, EPS)){
-      const Set *set = follow(r->head);
+      Set *set = follow(r->head);
       for (j = 0; j < set->size ; j++){
 	parsing_table_put(r->head, (char*)set->set[j], r);
       }
