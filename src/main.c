@@ -2,8 +2,33 @@
 #include "parser.h"
 #include "general_func.h"
 
+/*------------------- PRINT FUNC -------------------------*/
+
+void print_set(const Set *set){
+  printf("{");
+  for (size_t i = 0 ; i < set->size ; i++){
+    printf("%s, ", (char*)set->set[i]);
+  }
+  printf("}\n");
+}
+
+void print_vector(Vector *v){
+  printf("<");
+  for (size_t i = 0 ; i < v->nb_elts ; i++){
+    printf("%s, ", (char*)v->elts[i]);
+  }
+  printf(">\n");
+}
 
 /*------------------- TESTS -------------------------*/
+
+void test_A(){
+  for (size_t i = 0 ; i < get_A_length() ; i++){
+    Rule *r = get_rule(i);
+    printf("Rule for %s:\n", r->head);
+    print_ptr(r->body, 0);
+  }
+}
 
 void test_lexer(char *buffer){
  int idx = 0;
@@ -30,8 +55,21 @@ void test_parser(){
   /* const Set *set = first(gen_conc(gen_star(gen_conc(gen_atom("T",0,NON_TERMINAL), */
   /* 						    gen_atom("+",0,TERMINAL))), */
   /* 				  gen_atom("T2",0,TERMINAL))); */
-  const Set *set = first(gen_E());
+  const Set *set = first("E");
   print_set(set);
+  const Set *set2 = follow("E");
+  print_set(set2);
+}
+
+void test_leaves(){
+  size_t i;
+  Vector *u = leaves(gen_conc(gen_atom("T",0,NON_TERMINAL),
+			      gen_atom("+",0,TERMINAL)),
+		     empty_vector());
+  Vector *v = leaves(gen_F(), empty_vector());
+  for (i = 0 ; i < v->nb_elts ; i++){
+    print_vector(v->elts[i]);
+  }
 }
 
 
@@ -57,9 +95,19 @@ int main(int argc, char **argv){
   }
   path = argv[1];
 
+  printf("/*------------------ FOREST ------------------*/\n");
+  gen_Forest();
+  test_A();
+
   buffer = read_file(path);
-  printf("%s\n", buffer);
+  printf("Buffer:\n%s\n", buffer);
+  printf("/*------------------ LEXER ------------------*/\n");
   test_lexer(buffer);
+  printf("/*------------------ PARSER ------------------*/\n");
   test_parser();
+  printf("/*------------------ LEAVES ------------------*/\n");
+  test_leaves();
+
+
   return EXIT_SUCCESS;
 }

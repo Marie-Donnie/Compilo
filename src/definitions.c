@@ -2,6 +2,7 @@
 
 #include "definitions.h"
 
+bool is_in_G0_phase = true;
 
 
 
@@ -92,16 +93,110 @@ Ptr* gen_F(){
 			     gen_union(gen_conc(gen_conc(gen_atom("(",0,TERMINAL),
 							 gen_atom("E",0,NON_TERMINAL)),
 						gen_atom(")",0,TERMINAL)),
-				       gen_union(gen_star(gen_atom("E",0,NON_TERMINAL)),
-						 gen_un(gen_atom("E",0,NON_TERMINAL)))
+				       gen_union(gen_conc(gen_conc(gen_atom("[",0,TERMINAL),
+								   gen_atom("E",0,NON_TERMINAL)),
+							  gen_atom("]",0,TERMINAL)),
+						 gen_conc(gen_conc(gen_atom("(|",0,TERMINAL),
+								   gen_atom("E",0,NON_TERMINAL)),
+							  gen_atom("|)",0,TERMINAL)))
 						 )));
 }
 
+void gen_Forest() {
+  A = empty_vector();
+  vector_push(A,gen_rule("S", gen_S()));
+  vector_push(A,gen_rule("N", gen_N()));
+  vector_push(A,gen_rule("E", gen_E()));
+  vector_push(A,gen_rule("T", gen_T()));
+  vector_push(A,gen_rule("F", gen_F()));
+}
 
+Rule* gen_rule(char *head, Ptr *body){
+  Rule *r = check_malloc(sizeof(Rule));
+  r->head = head;
+  r->body = body;
+  return r;
+}
+
+Rule* get_rule(size_t index){
+  size_t newindex = is_in_G0_phase ? index : index+5;
+  if (newindex < A->nb_elts){
+    return ((Rule*)A->elts[newindex]);
+  }
+  fprintf(stderr, "Rule index out of range.\n");
+  exit(-1);
+}
+
+Rule* get_rule_by_head(char *head){
+  Rule *r = get_rule_by_head_lax(head);
+  if (r == NULL) {
+    fprintf(stderr, "Rule %s not found.\n", head);
+    exit(-1);
+  }
+  return r;
+}
+
+Rule* get_rule_by_head_lax(char *head){
+  for (size_t i = 0; i < get_A_length(); i++){
+    Rule *r = get_rule(i);
+    if (!strcmp(r->head, head)){
+      return r;
+    }
+  }
+  return NULL;
+}
+
+size_t get_A_length(){
+  if (is_in_G0_phase){
+    return 5;
+  }
+  else return (A->nb_elts -5);
+
+}
+
+/*------------------- PTR SPECIFIC FUNCTIONS -----------------------*/
+
+Vector* leaves(Ptr *p, Vector *v){
+  size_t i, j;
+  if (p->op_type == ATOM){
+    Vector *u = empty_vector();
+    vector_push(u, p->op.atom->code);
+    return vector_push(v, u);
+  }
+  else if (p->op_type == CONC){
+    Vector *left = leaves(p->op.conc->left, empty_vector());
+    Vector *right = leaves(p->op.conc->right, empty_vector());
+    for (i = 0 ; i < left->nb_elts ; i++){
+      for (j = 0 ; j < right->nb_elts ; j++){
+	Vector *u = empty_vector();
+	vector_concat(u, left->elts[i]);
+	vector_concat(u, right->elts[j]);
+	vector_push(v, u);
+      }
+    }
+    return v;
+  }
+  else if (p->op_type == UNION){
+    leaves(p->op.conc->left, v);
+    Vector *u = leaves(p->op.conc->right, empty_vector());
+    vector_concat(v,u);
+    return v;
+  }
+  else if (p->op_type == STAR){
+    leaves(p->op.star->stare, v);
+    return v;
+  }
+
+  else if (p->op_type == UN){
+    leaves(p->op.un->une, v);
+    return v;
+  }
+  fprintf(stderr, "Ptr is not defined.");
+  exit(-1);
+}
 
 /*------------------- DESTRUCTION -------------------------*/
 
-//void free_ptr(Ptr *p);
 
 void free_conc(Conc *c){
   free_ptr(c->left);

@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include "vector.h"
 
 /*------------------- DECLARATION -------------------------*/
 
@@ -13,6 +14,9 @@ typedef enum operation {CONC, UNION, STAR, UN, ATOM} Op;
 typedef enum cod {ELTER, IDNTER} Code;
 #define TER_SIZE 10
 #define ARRAY_SIZE 50
+
+Vector *A;
+extern bool is_in_G0_phase;
 
 typedef struct ptr Ptr;
 
@@ -57,9 +61,13 @@ typedef struct sl_u {
   Code code;
   int action;
   AtomType type;
-  char* chaine;
+  char* str;
 } Lexical_unit ;
 
+typedef struct {
+  char *head;
+  Ptr *body;
+} Rule;
 
 /*------------------- GENERATION -------------------------*/
 
@@ -77,6 +85,17 @@ Ptr* gen_E();
 Ptr* gen_T();
 Ptr* gen_F();
 
+void gen_Forest();
+Rule* gen_rule(char *head, Ptr *body);
+Rule *get_rule(size_t index);
+Rule* get_rule_by_head(char *head);
+Rule* get_rule_by_head_lax(char *head);
+size_t get_A_length();
+
+/*------------------- PTR SPECIFIC FUNCTIONS -----------------------*/
+
+Vector* leaves(Ptr *p, Vector *v);
+
 /*------------------- DESTRUCTION -------------------------*/
 
 void free_ptr(Ptr *p);
@@ -88,9 +107,6 @@ void free_union(Union *u);
 void free_un(Un *un);
 
 /*------------------- PRINT -------------------------*/
-
-void print_ptr(Ptr *p, int indent);
-void print_atom_type(AtomType at);
 
 void print_indent(int indent);
 void print_conc(Conc *c, int indent);

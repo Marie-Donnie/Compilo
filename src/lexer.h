@@ -2,6 +2,8 @@
 #define LEXER_H
 #include "definitions.h"
 
+extern const char* END_FILE_STR;
+
 typedef enum {IDENT, ARROW, TER, PLUS, POINT,
 	      L_BRACKET, R_BRACKET, L_PAREN, R_PAREN,
 	      L_PAREN_BAR, R_PAREN_BAR, COMMA, SEMI_COLON,

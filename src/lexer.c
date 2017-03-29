@@ -1,5 +1,7 @@
 #include "lexer.h"
 
+const char* END_FILE_STR = "end_file";
+
 
 /*------------------- CHAR RECOGNITION -------------------------*/
 
@@ -108,5 +110,6 @@ Token lex(char *string, int *index){
     }
   }
   token.type = END_FILE;
+  token.str = END_FILE_STR;
   return token;
 }

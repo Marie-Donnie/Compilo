@@ -23,7 +23,7 @@ const Set* set_add(const Set *set, const void *e){
 bool set_is_member(const Set *set, const void *e){
   size_t i;
   for (i = 0 ; i < set->size ; i++){
-    if (set->set[i] == e){
+    if (set_is_equal(set->set[i], e)){
       return true;
     }
   }
@@ -31,11 +31,14 @@ bool set_is_member(const Set *set, const void *e){
 }
 
 const Set* set_union(const Set *set1, const Set *set2){
+  size_t i;
   Set *ret_set = empty_set();
-  ret_set->set = check_malloc((set1->size + set2->size)*sizeof(void*));
-  ret_set->size = set1->size + set2->size;
+  ret_set->set = check_malloc(set1->size*sizeof(void*));
+  ret_set->size = set1->size;
   memcpy(ret_set->set, set1->set, set1->size*sizeof(void*));
-  memcpy((ret_set->set + set1->size), set2->set, set2->size*sizeof(void*));
+  for (i = 0 ; i < set2->size ; i++){
+    ret_set = set_add(ret_set, set2->set[i]);
+  }
   return ret_set;
 }
 
