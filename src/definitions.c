@@ -148,7 +148,7 @@ Rule* get_rule_by_head_lax(char *head){
 
 size_t get_A_length(){
   if (is_in_G0_phase){
-    return 5;
+    return A->nb_elts;
   }
   else return (A->nb_elts -5);
 

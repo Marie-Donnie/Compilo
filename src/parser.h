@@ -5,6 +5,7 @@
 #include "definitions.h"
 #include "hashmap.h"
 
+extern char *EPS;
 extern map_t *parsing_table;
 
 Set* first(char *head);
