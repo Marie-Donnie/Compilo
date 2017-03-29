@@ -2,6 +2,7 @@
 #include "minunit.h"
 #include "sets.h"
 #include "vector.h"
+#include "lexer.h"
 
 MU_TEST(sets) {
   Set *s = empty_set();
@@ -62,9 +63,55 @@ MU_TEST(vectors) {
   mu_check(vector_get(v, 2) == C);
 }
 
+MU_TEST(lexer) {
+  Token *t1 = gen_token(IDENT, "A");
+  mu_check(t1->type == IDENT);
+  mu_check(!strcmp(t1->str, "A"));
+
+  char *input = "Ident42 ->       +(|'rter'|)(ident)'abc' ['ab'] '' ,;";
+  Token *output[] = {
+    gen_token(IDENT, "Ident42"),
+    gen_token(ARROW, NULL),
+    gen_token(PLUS, NULL),
+    gen_token(L_PAREN_BAR, NULL),
+    gen_token(TER, "rter"),
+    gen_token(R_PAREN_BAR, NULL),
+    gen_token(L_PAREN, NULL),
+    gen_token(IDENT, "ident"),
+    gen_token(R_PAREN, NULL),
+    gen_token(TER, "abc"),
+    gen_token(L_BRACKET, NULL),
+    gen_token(TER, "ab"),
+    gen_token(R_BRACKET, NULL),
+    gen_token(TER, ""),
+    gen_token(COMMA, NULL),
+    gen_token(SEMI_COLON, NULL),
+    gen_token(END_FILE, END_FILE_STR),
+  };
+  size_t i = 0;
+  size_t out_len = sizeof(output) / sizeof(Token*);
+  int index = 0;
+  Token t;
+
+  do {
+    t = lex(input, &index);
+    mu_check(i < out_len);
+    mu_check(t.type == output[i]->type);
+    if (t.str == NULL) {
+      mu_check(output[i]->str == NULL);
+    }
+    else {
+      mu_check(output[i]->str != NULL);
+      mu_check(!strcmp(t.str, output[i]->str));
+    }
+    i++;
+  } while (t.type != END_FILE);
+}
+
 int main() {
   MU_RUN_TEST(sets);
   MU_RUN_TEST(vectors);
+  MU_RUN_TEST(lexer);
   MU_REPORT();
   return 0;
 }
