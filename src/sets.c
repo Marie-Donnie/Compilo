@@ -8,6 +8,18 @@ Set* empty_set(){
   return set;
 }
 
+int set_length(Set *s){
+  return s->size;
+}
+
+Set* set_copy(Set *s){
+  Set *ret = empty_set();
+  ret->set = check_malloc(s->size * sizeof(void*));
+  ret->size = s->size;
+  memcpy(ret->set, s->set, s->size * sizeof(void*));
+  return ret;
+}
+
 Set* set_add(Set *set, void *e){
   if (!set_is_member(set, e)){
     Set *ret_set = empty_set();

@@ -16,7 +16,8 @@ typedef struct {
 
 
 Vector* empty_vector();
-
+int vector_length(Vector *v);
+void* vector_get(Vector *v, int index);
 bool vector_is_member(Vector *v, void *e);
 
 Vector* vector_push(Vector *v, void *e);

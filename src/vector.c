@@ -9,6 +9,17 @@ Vector* empty_vector(){
   return v;
 }
 
+int vector_length(Vector *v){
+  return v->nb_elts;
+}
+
+void* vector_get(Vector *v, int index){
+  if (index < vector_length(v)) {
+    return v->elts[index];
+  }
+  fail("vector_get: index ouf of range");
+}
+
 bool vector_is_member(Vector *v, void *e){
   size_t i;
   for (i = 0 ; i < v->nb_elts ; i++){

@@ -1,10 +1,14 @@
 # Project name
 EXEC=compilo
+TEST_EXEC=testo
+
+CXX=gcc
+LINKER=gcc -o
 
 # Compiler
 IDIR=src
 IDIRFLAG=$(foreach idir, $(IDIR), -I$(idir))
-CXXFLAGS=$(IDIRFLAG)
+CXXFLAGS=-Wall $(IDIRFLAG)
 
 # Linker
 LFLAGS=$(IDIRFLAG)
@@ -18,6 +22,9 @@ BINDIR=.
 SOURCES=$(foreach sdir, $(SRCDIR), $(wildcard $(sdir)/*.c))
 OBJECTS=$(patsubst %.c, $(OBJDIR)/%.o, $(notdir $(SOURCES)))
 
+# Can have only one main function per executable
+EXEC_OBJECTS=$(filter-out $(OBJDIR)/test.o, $(OBJECTS))
+TEST_OBJECTS=$(filter-out $(OBJDIR)/main.o, $(OBJECTS))
 
 vpath %.c $(SRCDIR)
 
@@ -27,24 +34,27 @@ vpath %.c $(SRCDIR)
 # $< is the first item in the dependencies list
 
 # Rules
+all: main test
+
+main: $(BINDIR)/$(EXEC)
+test: $(BINDIR)/$(TEST_EXEC)
+
 #gcc: clean
-gcc: CXX=gcc
-gcc: LINKER=gcc -o
-gcc: $(BINDIR)/$(EXEC)
+
 
 #gcc-debug: clean
-gcc-debug: CXX=gcc
-gcc-debug: LINKER=gcc -o
 gcc-debug: CXXFLAGS += -ggdb
-gcc-debug: $(BINDIR)/$(EXEC)
 
-$(BINDIR)/$(EXEC): $(OBJECTS)
+$(BINDIR)/$(EXEC): $(EXEC_OBJECTS)
+	$(LINKER) $@ $^ $(LFLAGS)
+
+$(BINDIR)/$(TEST_EXEC): $(TEST_OBJECTS)
 	$(LINKER) $@ $^ $(LFLAGS)
 
 $(OBJDIR)/%.o: %.c
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-.PHONY: gcc gcc-debug clang clang-debug clean
+.PHONY: gcc gcc-debug clang clang-debug clean all main test
 
 clean:
 	rm -fr $(OBJECTS) $(BINDIR)/$(EXEC)

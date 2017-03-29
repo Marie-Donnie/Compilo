@@ -14,6 +14,7 @@ typedef struct {
 } Set;
 
 Set* empty_set();
+int set_length(Set *s);
 bool set_is_member(Set *set, void *e);
 Set* set_add(Set *set, void *e);
 Set* set_union(Set *set1, Set *set2);

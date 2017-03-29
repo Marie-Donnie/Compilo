@@ -43,6 +43,11 @@ void* check_realloc(void* p, size_t size){
   return ret;
 }
 
+void fail(char *msg){
+  fprintf(stderr, "%s\n", msg);
+  exit(1);
+}
+
 
 void eat_space(){}
 

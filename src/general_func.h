@@ -13,6 +13,7 @@ long char_count(FILE *file);
 char* read_file(char *path);
 void* check_malloc(size_t size);
 void* check_realloc(void* p, size_t size);
+void fail(char *msg);
 
 void eat_space();
 
