@@ -105,6 +105,20 @@ Rule* get_rule_by_head(char *head);
 Rule* get_rule_by_head_lax(char *head);
 size_t get_A_length();
 
+/*------------------- EQUALITY -----------------------*/
+
+bool ptr_equal(Ptr *a, Ptr *b);
+bool atom_equal(Atom *a, Atom *b);
+bool conc_equal(Conc *a, Conc *b);
+bool union_equal(Union *a, Union *b);
+bool star_equal(Star *a, Star *b);
+bool un_equal(Un *a, Un *b);
+bool rule_equal(Rule *a, Rule *b);
+bool grammar_equal(Vector *a, Vector *b);
+
+/*------------------- PTR SPECIFIC FUNCTIONS -----------------------*/
+
+Vector* leaves(Ptr *p, Vector *v);
 
 /*------------------- DESTRUCTION -------------------------*/
 
