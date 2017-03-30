@@ -64,6 +64,56 @@ MU_TEST(vectors) {
   mu_check(vector_get(v, 2) == C);
 }
 
+MU_TEST(ptr_test) {
+  mu_check(ptr_equal(gen_atom("a", 0, TERMINAL),
+                     gen_atom("a", 0, TERMINAL)));
+
+  mu_check(!ptr_equal(gen_atom("a", 0, TERMINAL),
+                      gen_atom("b", 0, TERMINAL)));
+
+  mu_check(!ptr_equal(gen_atom("a", 0, TERMINAL),
+                      gen_atom("a", 0, NON_TERMINAL)));
+
+  mu_check(!ptr_equal(gen_atom("a", 0, TERMINAL),
+                      gen_atom("a", 1, TERMINAL)));
+
+  mu_check(ptr_equal(gen_S(), gen_S()));
+  mu_check(ptr_equal(gen_N(), gen_N()));
+  mu_check(ptr_equal(gen_T(), gen_T()));
+  mu_check(ptr_equal(gen_E(), gen_E()));
+  mu_check(ptr_equal(gen_F(), gen_F()));
+}
+
+MU_TEST(rule_test) {
+  mu_check(rule_equal(gen_rule("S", gen_atom("a", 0, TERMINAL)),
+                      gen_rule("S", gen_atom("a", 0, TERMINAL))));
+  mu_check(!rule_equal(gen_rule("S", gen_atom("a", 0, TERMINAL)),
+                       gen_rule("A", gen_atom("a", 0, TERMINAL))));
+  mu_check(!rule_equal(gen_rule("S", gen_atom("a", 0, TERMINAL)),
+                       gen_rule("S", gen_atom("b", 0, TERMINAL))));
+
+  mu_check(rule_equal(gen_rule("S", gen_S()),
+                      gen_rule("S", gen_S())));
+}
+
+MU_TEST(grammar_test) {
+  Vector *G = empty_vector();
+  vector_push(G, gen_rule("S", gen_S()));
+  vector_push(G, gen_rule("N", gen_N()));
+  vector_push(G, gen_rule("E", gen_E()));
+  vector_push(G, gen_rule("T", gen_T()));
+  vector_push(G, gen_rule("F", gen_F()));
+
+  Vector *G2 = empty_vector();
+  vector_push(G2, gen_rule("S", gen_S()));
+  vector_push(G2, gen_rule("N", gen_N()));
+  vector_push(G2, gen_rule("E", gen_E()));
+  vector_push(G2, gen_rule("T", gen_T()));
+  vector_push(G2, gen_rule("F", gen_F()));
+
+  mu_check(grammar_equal(G, G2));
+}
+
 MU_TEST(lexer) {
   Token *t1 = gen_token(IDENT, "A");
   mu_check(t1->type == IDENT);
@@ -246,6 +296,9 @@ MU_TEST(follow_test) {
 int main() {
   MU_RUN_TEST(sets);
   MU_RUN_TEST(vectors);
+  MU_RUN_TEST(ptr_test);
+  MU_RUN_TEST(rule_test);
+  MU_RUN_TEST(grammar_test);
   MU_RUN_TEST(lexer);
   MU_RUN_TEST(leaves_test);
   MU_RUN_TEST(first_test);

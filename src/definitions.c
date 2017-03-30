@@ -154,6 +154,69 @@ size_t get_A_length(){
 
 }
 
+/*------------------- EQUALITY -----------------------*/
+
+bool ptr_equal(Ptr *a, Ptr *b){
+  if (a->op_type == ATOM && b->op_type == ATOM){
+    return atom_equal(a->op.atom, b->op.atom);
+  }
+  else if (a->op_type == CONC && b->op_type == CONC){
+    return conc_equal(a->op.conc, b->op.conc);
+  }
+  else if (a->op_type == UNION && b->op_type == UNION){
+    return union_equal(a->op.uni, b->op.uni);
+  }
+  else if (a->op_type == STAR && b->op_type == STAR){
+    return star_equal(a->op.star, b->op.star);
+  }
+  else if (a->op_type == UN && b->op_type == UN){
+    return un_equal(a->op.un, b->op.un);
+  }
+  return false;
+}
+
+bool atom_equal(Atom *a, Atom *b){
+  return a->action == b->action
+    && a->a_type == b->a_type
+    && !strcmp(a->code, b->code);
+}
+
+bool conc_equal(Conc *a, Conc *b){
+  return ptr_equal(a->left, b->left)
+    && ptr_equal(a->right, b->right);
+}
+
+bool union_equal(Union *a, Union *b){
+  return ptr_equal(a->left, b->left)
+    && ptr_equal(a->right, b->right);
+}
+
+bool star_equal(Star *a, Star *b){
+  return ptr_equal(a->stare, b->stare);
+}
+
+bool un_equal(Un *a, Un *b){
+  return ptr_equal(a->une, b->une);
+}
+
+bool rule_equal(Rule *a, Rule *b){
+  return !strcmp(a->head, b->head)
+    && ptr_equal(a->body, b->body);
+}
+
+bool grammar_equal(Vector *a, Vector *b){
+  if (vector_length(a) != vector_length(b)) {
+    return false;
+  }
+
+  for (int i = 0 ; i < vector_length(a) ; i++){
+    if (!rule_equal(vector_get(a, i), vector_get(b, i))){
+      return false;
+    }
+  }
+  return true;
+}
+
 /*------------------- PTR SPECIFIC FUNCTIONS -----------------------*/
 
 Vector* leaves(Ptr *p, Vector *v){
