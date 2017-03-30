@@ -326,6 +326,22 @@ Vector* leaves(Ptr *p, Vector *v){
   exit(-1);
 }
 
+Vector* leaves_normalized(Ptr *p, Vector *atoms){
+  if (p->op_type == ATOM){
+    vector_push(atoms, p->op.atom->code);
+    return atoms;
+  }
+
+  else if (p->op_type == CONC){
+    leaves_normalized(p->op.conc->left, atoms);
+    leaves_normalized(p->op.conc->right, atoms);
+    return atoms;
+  }
+
+  fprintf(stderr, "Ptr is not normalized.");
+  exit(-1);
+}
+
 /*------------------- DESTRUCTION -------------------------*/
 
 

@@ -115,6 +115,7 @@ char *gen_symbol(char *head, Vector *rules);
 /*------------------- PTR SPECIFIC FUNCTIONS -----------------------*/
 
 Vector* leaves(Ptr *p, Vector *v);
+Vector* leaves_normalized(Ptr *p, Vector *atoms);
 
 /*------------------- DESTRUCTION -------------------------*/
 

@@ -99,6 +99,30 @@ Set* follow(char *head){
   return s;
 }
 
+Set* follow_normalized(char *head){
+  Set *s = empty_set();
+
+  // Rule = S
+  if (is_equal(head, get_rule(0)->head)){
+    return set_add(s, END_FILE_STR);
+  }
+
+  for (int i = 0 ; i < get_A_length() ; i++){
+    Rule *r = vector_get(A, i);
+    Vector *prod = leaves_normalized(r->body, empty_vector());
+    int idx = index_of(head, prod);
+    if (idx > -1){
+      // Symbol at end of production
+      if (idx == vector_length(prod) - 1
+          && strcmp(head, r->head)){ // Don't recurse
+        s = set_union(s, follow_normalized(r->head));
+      }
+      else if (idx < vector_length(prod) - 1) {
+        s = set_union(s, first(vector_get(prod, idx + 1)));
+        if (set_is_member(s, EPS) && strcmp(head, r->head)){
+          s = set_union(s, follow_normalized(r->head));
+          s = set_remove(s, EPS);
+        }
       }
     }
   }

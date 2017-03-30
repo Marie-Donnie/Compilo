@@ -189,7 +189,7 @@ MU_TEST(leaves_test) {
   // Star
   v = leaves(gen_star(gen_atom("a", 0, TERMINAL)), empty_vector());
   // {???}
-  mu_fail("not written");
+  /* mu_fail("not written"); */
   /* mu_check(vector_length(v) == 1); */
   /* mu_check(vector_length(vector_get(v, 0)) == 2); */
   /* mu_check(!strcmp(vector_get(vector_get(v, 0), 0), "a")); */
@@ -198,11 +198,19 @@ MU_TEST(leaves_test) {
   // Un
   v = leaves(gen_un(gen_atom("a", 0, TERMINAL)), empty_vector());
   // {???}
-  mu_fail("not written");
+  /* mu_fail("not written"); */
   /* mu_check(vector_length(v) == 1); */
   /* mu_check(vector_length(vector_get(v, 0)) == 2); */
   /* mu_check(!strcmp(vector_get(vector_get(v, 0), 0), "a")); */
   /* mu_check(!strcmp(vector_get(vector_get(v, 0), 1), EPS)); */
+
+  // S -> Ab
+  v = leaves_normalized(gen_conc(gen_atom("A", 0, NON_TERMINAL),
+                                 gen_atom("b", 0, TERMINAL)),
+                        empty_vector());
+  mu_check(vector_length(v) == 2);
+  mu_check(!strcmp(vector_get(v, 0), "A"));
+  mu_check(!strcmp(vector_get(v, 1), "b"));
 }
 
 MU_TEST(first_test) {
@@ -374,6 +382,56 @@ MU_TEST(normalize_test) {
   mu_check(grammar_equal(Gn, Gcheck));
 }
 
+MU_TEST(follow_normalized_test) {
+  // S -> [A]b
+  // A -> a
+  Vector *G = empty_vector();
+  reset_cache();
+  vector_push(G, gen_rule("S", gen_conc(gen_star(gen_atom("A", 0, NON_TERMINAL)),
+                                        gen_atom("b", 0, TERMINAL))));
+  vector_push(G, gen_rule("A", gen_atom("a", 0, TERMINAL)));
+  A = normalize_grammar(G);
+  Set *s = follow_normalized("S0");
+  // {b}
+  mu_check(set_length(s) == 1);
+  mu_check(set_is_member(s, "b"));
+
+  // S -> A[B]c
+  // A -> a
+  // B -> b
+  G = empty_vector();
+  reset_cache();
+  vector_push(G, gen_rule("S", gen_conc(gen_conc(gen_atom("A", 0, NON_TERMINAL),
+                                                 gen_star(gen_atom("B", 0, NON_TERMINAL))),
+                                        gen_atom("c", 0, TERMINAL))));
+  vector_push(G, gen_rule("A", gen_atom("a", 0, TERMINAL)));
+  vector_push(G, gen_rule("B", gen_atom("b", 0, TERMINAL)));
+  A = normalize_grammar(G);
+  s = follow_normalized("A");
+  // {b, c}
+  mu_check(set_length(s) == 2);
+  mu_check(set_is_member(s, "b"));
+  mu_check(set_is_member(s, "c"));
+
+  // G0
+  G = empty_vector();
+  reset_cache();
+  vector_push(G, gen_rule("S", gen_S()));
+  vector_push(G, gen_rule("N", gen_N()));
+  vector_push(G, gen_rule("E", gen_E()));
+  vector_push(G, gen_rule("T", gen_T()));
+  vector_push(G, gen_rule("F", gen_F()));
+  A = normalize_grammar(G);
+  s = follow_normalized("E");
+  // {,, ), ], |)}
+  mu_check(set_length(s) == 4);
+  mu_check(set_is_member(s, ","));
+  mu_check(set_is_member(s, ")"));
+  mu_check(set_is_member(s, "]"));
+  mu_check(set_is_member(s, "|)"));
+
+}
+
 int main() {
   MU_RUN_TEST(sets);
   MU_RUN_TEST(vectors);
@@ -385,6 +443,7 @@ int main() {
   MU_RUN_TEST(first_test);
   MU_RUN_TEST(follow_test);
   MU_RUN_TEST(normalize_test);
+  MU_RUN_TEST(follow_normalized_test);
   MU_REPORT();
   return 0;
 }
