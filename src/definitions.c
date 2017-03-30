@@ -215,6 +215,76 @@ bool grammar_equal(Vector *a, Vector *b){
   return true;
 }
 
+/*------------------- NORMALIZATION -----------------------*/
+
+Vector* normalize_grammar(Vector *g){
+  Vector *ret = empty_vector();
+
+  for (int i = 0; i < vector_length(g); i++){
+    Vector *r = normalize_rule(vector_get(g, i));
+    vector_concat(ret, r);
+  }
+
+  return ret;
+}
+
+int sym_id = 0;
+Vector* normalize_rule(Rule *r){
+  // Reset sym_id to get predictable generated names
+  sym_id = 0;
+
+  Vector *new_rules = empty_vector();
+  Ptr *new_body = normalize_ptr(r->body, r->head, new_rules);
+  // Put the new r in first position
+  Vector *ret = empty_vector();
+  vector_push(ret, gen_rule(r->head, new_body));
+  vector_concat(ret, new_rules);
+  return ret;
+}
+
+Ptr* normalize_ptr(Ptr *p, char *head, Vector *rules){
+  if (p->op_type == ATOM){
+    return p;
+  }
+  else if (p->op_type == CONC){
+    return gen_conc(normalize_ptr(p->op.conc->left, head, rules),
+                    normalize_ptr(p->op.conc->right, head, rules));
+  }
+  else if (p->op_type == UNION){
+    char *new_head = gen_symbol(head, rules);
+    vector_push(rules, gen_rule(new_head,
+                                normalize_ptr(p->op.uni->left, head, rules)));
+    vector_push(rules, gen_rule(new_head,
+                                normalize_ptr(p->op.uni->right, head, rules)));
+    return gen_atom(new_head, 0, NON_TERMINAL);
+  }
+  else if (p->op_type == UN){
+    char *new_head = gen_symbol(head, rules);
+    vector_push(rules, gen_rule(new_head,
+                                normalize_ptr(p->op.un->une, head, rules)));
+    vector_push(rules, gen_rule(new_head, gen_atom(EPS, 0, TERMINAL)));
+    return gen_atom(new_head, 0, NON_TERMINAL);
+  }
+  else if (p->op_type == STAR){
+    char *new_head = gen_symbol(head, rules);
+    vector_push(rules, gen_rule(new_head, gen_conc(normalize_ptr(p->op.star->stare, head, rules),
+                                                   gen_atom(new_head, 0, NON_TERMINAL))));
+    vector_push(rules, gen_rule(new_head, gen_atom(EPS, 0, TERMINAL)));
+    return gen_atom(new_head, 0, NON_TERMINAL);
+  }
+  else {
+    fprintf(stderr, "normalize_ptr: Non-exhaustive match %d\n", p->op_type);
+    exit(1);
+  }
+}
+
+char *gen_symbol(char *head, Vector *rules){
+  char *ret = malloc((strlen(head) + 5) * sizeof(char));
+  sprintf(ret, "%s%d", head, sym_id);
+  sym_id++;
+  return ret;
+}
+
 /*------------------- PTR SPECIFIC FUNCTIONS -----------------------*/
 
 Vector* leaves(Ptr *p, Vector *v){

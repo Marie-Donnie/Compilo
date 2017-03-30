@@ -7,6 +7,8 @@
 #include <stdbool.h>
 #include "vector.h"
 
+extern char *EPS;
+
 /*------------------- DECLARATION -------------------------*/
 
 typedef enum atomType {TERMINAL, NON_TERMINAL} AtomType;
@@ -102,6 +104,13 @@ bool star_equal(Star *a, Star *b);
 bool un_equal(Un *a, Un *b);
 bool rule_equal(Rule *a, Rule *b);
 bool grammar_equal(Vector *a, Vector *b);
+
+/*------------------- NORMALIZATION -----------------------*/
+
+Vector* normalize_grammar(Vector *g);
+Vector* normalize_rule(Rule *r);
+Ptr* normalize_ptr(Ptr *p, char *head, Vector *rules);
+char *gen_symbol(char *head, Vector *rules);
 
 /*------------------- PTR SPECIFIC FUNCTIONS -----------------------*/
 

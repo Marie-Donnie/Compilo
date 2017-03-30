@@ -293,6 +293,87 @@ MU_TEST(follow_test) {
   mu_check(set_is_member(s, "|)"));
 }
 
+MU_TEST(normalize_test) {
+  // S -> a
+  Vector *G = empty_vector();
+  vector_push(G, gen_rule("S", gen_atom("a", 0, TERMINAL)));
+  Vector *Gn = normalize_grammar(G);
+  // S -> a
+  Vector *Gcheck = empty_vector();
+  vector_push(Gcheck, gen_rule("S", gen_atom("a", 0, TERMINAL)));
+  mu_check(grammar_equal(Gn, Gcheck));
+
+  // S -> a . b
+  G = empty_vector();
+  vector_push(G, gen_rule("S", gen_conc(gen_atom("a", 0, TERMINAL),
+                                        gen_atom("b", 0, TERMINAL))));
+  Gn = normalize_grammar(G);
+  // S -> a . b
+  Gcheck = empty_vector();
+  vector_push(Gcheck, gen_rule("S", gen_conc(gen_atom("a", 0, TERMINAL),
+                                             gen_atom("b", 0, TERMINAL))));
+  mu_check(grammar_equal(Gn, Gcheck));
+
+  // S -> a + b
+  G = empty_vector();
+  vector_push(G, gen_rule("S", gen_union(gen_atom("a", 0, TERMINAL),
+                                         gen_atom("b", 0, TERMINAL))));
+  Gn = normalize_grammar(G);
+  // S -> S0
+  // S0 -> a
+  // S0 -> b
+  Gcheck = empty_vector();
+  vector_push(Gcheck, gen_rule("S", gen_atom("S0", 0, NON_TERMINAL)));
+  vector_push(Gcheck, gen_rule("S0", gen_atom("a", 0, TERMINAL)));
+  vector_push(Gcheck, gen_rule("S0", gen_atom("b", 0, TERMINAL)));
+  mu_check(grammar_equal(Gn, Gcheck));
+
+  // S -> [a]
+  G = empty_vector();
+  vector_push(G, gen_rule("S", gen_star(gen_atom("a", 0, TERMINAL))));
+  Gn = normalize_grammar(G);
+  // S -> S0
+  // S0 -> a S0
+  // S0 -> EPS
+  Gcheck = empty_vector();
+  vector_push(Gcheck, gen_rule("S", gen_atom("S0", 0, NON_TERMINAL)));
+  vector_push(Gcheck, gen_rule("S0", gen_conc(gen_atom("a", 0, TERMINAL),
+                                              gen_atom("S0", 0, NON_TERMINAL))));
+  vector_push(Gcheck, gen_rule("S0", gen_atom(EPS, 0, TERMINAL)));
+  mu_check(grammar_equal(Gn, Gcheck));
+
+  // S -> (|a|)
+  G = empty_vector();
+  vector_push(G, gen_rule("S", gen_un(gen_atom("a", 0, TERMINAL))));
+  Gn = normalize_grammar(G);
+  // S -> S0
+  // S0 -> a
+  // S0 -> EPS
+  Gcheck = empty_vector();
+  vector_push(Gcheck, gen_rule("S", gen_atom("S0", 0, NON_TERMINAL)));
+  vector_push(Gcheck, gen_rule("S0", gen_atom("a", 0, TERMINAL)));
+  vector_push(Gcheck, gen_rule("S0", gen_atom(EPS, 0, TERMINAL)));
+  mu_check(grammar_equal(Gn, Gcheck));
+
+  // S -> [A B]c
+  G = empty_vector();
+  vector_push(G, gen_rule("S", gen_conc(gen_star(gen_conc(gen_atom("A", 0, NON_TERMINAL),
+                                                          gen_atom("B", 0, NON_TERMINAL))),
+                                        gen_atom("c", 0, TERMINAL))));
+  Gn = normalize_grammar(G);
+  // S -> S0c
+  // S0 -> A B S0
+  // S0 -> EPS
+  Gcheck = empty_vector();
+  vector_push(Gcheck, gen_rule("S", gen_conc(gen_atom("S0", 0, NON_TERMINAL),
+                                             gen_atom("c", 0, TERMINAL))));
+  vector_push(Gcheck, gen_rule("S0", gen_conc(gen_conc(gen_atom("A", 0, NON_TERMINAL),
+                                                       gen_atom("B", 0, NON_TERMINAL)),
+                                              gen_atom("S0", 0, NON_TERMINAL))));
+  vector_push(Gcheck, gen_rule("S0", gen_atom(EPS, 0, TERMINAL)));
+  mu_check(grammar_equal(Gn, Gcheck));
+}
+
 int main() {
   MU_RUN_TEST(sets);
   MU_RUN_TEST(vectors);
@@ -303,6 +384,7 @@ int main() {
   MU_RUN_TEST(leaves_test);
   MU_RUN_TEST(first_test);
   MU_RUN_TEST(follow_test);
+  MU_RUN_TEST(normalize_test);
   MU_REPORT();
   return 0;
 }
