@@ -38,8 +38,6 @@ Set* first(char *head){
 }
 
 Set* first_ptr(Ptr *p){
-
-
   if (p->op_type == ATOM){
     if (p->op.atom->a_type == TERMINAL){
       return set_add(empty_set(), p->op.atom->code);
@@ -81,20 +79,26 @@ Set* follow(char *head){
       Rule *r = get_rule(i);
       Vector *vv = leaves(r->body, empty_vector());
       for (j = 0 ; j < vv->nb_elts ; j++){
-	Vector *v = vv->elts[j];
-	idx = index_of(head, v);
-	if (idx > -1){
-	  if ((size_t)idx == v->nb_elts -1){
-	    s = set_union(s, follow(r->head));
-	  }
-	  else {
-	    s = set_union(s, first(v->elts[idx+1]));
-	    if (set_is_member(s, EPS)){
-	      s = set_union(s, follow(r->head));
-	      s = set_remove(s, EPS);
-	    }
-	  }
-	}
+        Vector *v = vv->elts[j];
+        idx = index_of(head, v);
+        if (idx > -1){
+          if ((size_t)idx == v->nb_elts -1){
+            s = set_union(s, follow(r->head));
+          }
+          else {
+            s = set_union(s, first(v->elts[idx+1]));
+            if (set_is_member(s, EPS)){
+              s = set_union(s, follow(r->head));
+              s = set_remove(s, EPS);
+            }
+          }
+        }
+      }
+    }
+  }
+  return s;
+}
+
       }
     }
   }
@@ -131,7 +135,7 @@ int index_of(char *ter, Vector *v){
   size_t i;
   for (i = 0 ; i < v->nb_elts ; i++){
     if (is_equal(ter, v->elts[i])){
-	return (int)i;
+      return (int)i;
     }
   }
   return -1;
@@ -148,13 +152,13 @@ void init_parsing_table(){
     Set *s = first(r->head);
     for (j = 0 ; j < s->size ; j++){
       if (!is_equal(s->set[j], EPS)){
-	parsing_table_put(r->head, (char*)s->set[j], r);
+        parsing_table_put(r->head, (char*)s->set[j], r);
       }
     }
     if (set_is_member(s, EPS)){
       Set *set = follow(r->head);
       for (j = 0; j < set->size ; j++){
-	parsing_table_put(r->head, (char*)set->set[j], r);
+        parsing_table_put(r->head, (char*)set->set[j], r);
       }
     }
   }

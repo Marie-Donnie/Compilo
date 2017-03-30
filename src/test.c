@@ -270,7 +270,7 @@ MU_TEST(follow_test) {
   // S -> [A]b
   // A -> a
   vector_push(A, gen_rule("S", gen_conc(gen_star(gen_atom("A", 0, NON_TERMINAL)),
-					gen_atom("b", 0, TERMINAL))));
+                                        gen_atom("b", 0, TERMINAL))));
   vector_push(A, gen_rule("A", gen_atom("a", 0, TERMINAL)));
   Set *s = follow("A");
   // {b}

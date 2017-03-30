@@ -1,5 +1,3 @@
-
-
 #include "definitions.h"
 
 bool is_in_G0_phase = true;
@@ -231,17 +229,17 @@ Vector* leaves(Ptr *p, Vector *v){
     Vector *right = leaves(p->op.conc->right, empty_vector());
     for (i = 0 ; i < left->nb_elts ; i++){
       for (j = 0 ; j < right->nb_elts ; j++){
-	Vector *u = empty_vector();
-	vector_concat(u, left->elts[i]);
-	vector_concat(u, right->elts[j]);
-	vector_push(v, u);
+        Vector *u = empty_vector();
+        vector_concat(u, left->elts[i]);
+        vector_concat(u, right->elts[j]);
+        vector_push(v, u);
       }
     }
     return v;
   }
   else if (p->op_type == UNION){
-    leaves(p->op.conc->left, v);
-    Vector *u = leaves(p->op.conc->right, empty_vector());
+    leaves(p->op.uni->left, v);
+    Vector *u = leaves(p->op.uni->right, empty_vector());
     vector_concat(v,u);
     return v;
   }
