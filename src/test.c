@@ -274,9 +274,10 @@ MU_TEST(first_test) {
 }
 
 MU_TEST(follow_test) {
-  A = empty_vector();
   // S -> [A]b
   // A -> a
+  A = empty_vector();
+  reset_cache();
   vector_push(A, gen_rule("S", gen_conc(gen_star(gen_atom("A", 0, NON_TERMINAL)),
                                         gen_atom("b", 0, TERMINAL))));
   vector_push(A, gen_rule("A", gen_atom("a", 0, TERMINAL)));
@@ -285,8 +286,25 @@ MU_TEST(follow_test) {
   mu_check(set_length(s) == 1);
   mu_check(set_is_member(s, "b"));
 
+  // S -> A[B]c
+  // A -> a
+  // B -> b
+  A = empty_vector();
+  reset_cache();
+  vector_push(A, gen_rule("S", gen_conc(gen_conc(gen_atom("A", 0, NON_TERMINAL),
+                                                 gen_star(gen_atom("B", 0, NON_TERMINAL))),
+                                        gen_atom("c", 0, TERMINAL))));
+  vector_push(A, gen_rule("A", gen_atom("a", 0, TERMINAL)));
+  vector_push(A, gen_rule("B", gen_atom("b", 0, TERMINAL)));
+  s = follow("A");
+  // {b, c}
+  mu_check(set_length(s) == 2);
+  mu_check(set_is_member(s, "b"));
+  mu_check(set_is_member(s, "c"));
+
   // G0
   gen_Forest();
+  reset_cache();
   s = follow("S");
   // {$}
   mu_check(set_length(s) == 1);

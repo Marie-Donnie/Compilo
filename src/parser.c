@@ -10,6 +10,10 @@ bool set_is_equal(void *a, void *b){
   return is_equal((char*)a, (char*)b);
 }
 
+void reset_cache(){
+  cache_first = hashmap_new();
+}
+
 Set* first(char *head){
   Set *s;
   int error;

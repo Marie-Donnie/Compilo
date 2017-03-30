@@ -15,6 +15,7 @@ Set* set_union_eps(Set *set1, Set *set2);
 Ptr* get_production(char *code);
 bool is_equal(char *ter1, char *ter2);
 int index_of(char *ter, Vector *v);
+void reset_cache();
 
 
 /*------------------- PARSING_TABLE -------------------------*/
