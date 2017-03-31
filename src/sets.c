@@ -2,7 +2,7 @@
 
 
 Set* empty_set(){
-  Set *set = malloc(sizeof(Set));
+  Set *set = check_malloc(sizeof(Set));
   set->size = 0;
   set->set = NULL;
   return set;
