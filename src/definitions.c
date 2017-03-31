@@ -152,6 +152,17 @@ size_t get_A_length(){
 
 }
 
+Vector* grammar_get_rules_for(Vector *G, char *head){
+  Vector *rules = empty_vector();
+  for (int i = 0; i < vector_length(G); i++){
+    Rule *r = vector_get(G, i);
+    if (!strcmp(r->head, head)) {
+      vector_push(rules, r);
+    }
+  }
+  return rules;
+}
+
 /*------------------- EQUALITY -----------------------*/
 
 bool ptr_equal(Ptr *a, Ptr *b){

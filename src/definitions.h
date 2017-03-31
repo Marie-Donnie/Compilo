@@ -92,6 +92,7 @@ Rule* gen_rule(char *head, Ptr *body);
 Rule *get_rule(size_t index);
 Rule* get_rule_by_head(char *head);
 Rule* get_rule_by_head_lax(char *head);
+Vector* grammar_get_rules_for(Vector *G, char *head);
 size_t get_A_length();
 
 /*------------------- EQUALITY -----------------------*/
