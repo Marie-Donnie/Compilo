@@ -39,11 +39,8 @@ all: main test
 main: $(BINDIR)/$(EXEC)
 test: $(BINDIR)/$(TEST_EXEC)
 
-#gcc: clean
-
-
-#gcc-debug: clean
-gcc-debug: CXXFLAGS += -ggdb
+debug: CXXFLAGS += -ggdb
+debug: clean all
 
 $(BINDIR)/$(EXEC): $(EXEC_OBJECTS)
 	$(LINKER) $@ $^ $(LFLAGS)
@@ -54,7 +51,7 @@ $(BINDIR)/$(TEST_EXEC): $(TEST_OBJECTS)
 $(OBJDIR)/%.o: %.c
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-.PHONY: gcc gcc-debug clang clang-debug clean all main test
+.PHONY: clean all main test debug
 
 clean:
 	rm -fr $(OBJECTS) $(BINDIR)/$(EXEC)
