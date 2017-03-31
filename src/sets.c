@@ -61,9 +61,9 @@ Set* set_remove(Set *set, void *e){
     ret_set->set = check_malloc((set->size-1)*sizeof(e));
     ret_set->size = set->size - 1;
     for (i = 0, j = 0 ; i < set->size ; i++){
-      if (set->set[i] != e){
-	ret_set->set[j] = set->set[i];
-	j++;
+      if (!set_is_equal(set->set[i], e)){
+        ret_set->set[j] = set->set[i];
+        j++;
       }
     }
     return ret_set;
