@@ -287,54 +287,15 @@ char *gen_symbol(char *head, Vector *rules){
 
 /*------------------- PTR SPECIFIC FUNCTIONS -----------------------*/
 
-Vector* leaves(Ptr *p, Vector *v){
-  size_t i, j;
-  if (p->op_type == ATOM){
-    Vector *u = empty_vector();
-    vector_push(u, p->op.atom->code);
-    return vector_push(v, u);
-  }
-  else if (p->op_type == CONC){
-    Vector *left = leaves(p->op.conc->left, empty_vector());
-    Vector *right = leaves(p->op.conc->right, empty_vector());
-    for (i = 0 ; i < left->nb_elts ; i++){
-      for (j = 0 ; j < right->nb_elts ; j++){
-        Vector *u = empty_vector();
-        vector_concat(u, left->elts[i]);
-        vector_concat(u, right->elts[j]);
-        vector_push(v, u);
-      }
-    }
-    return v;
-  }
-  else if (p->op_type == UNION){
-    leaves(p->op.uni->left, v);
-    Vector *u = leaves(p->op.uni->right, empty_vector());
-    vector_concat(v,u);
-    return v;
-  }
-  else if (p->op_type == STAR){
-    leaves(p->op.star->stare, v);
-    return v;
-  }
-
-  else if (p->op_type == UN){
-    leaves(p->op.un->une, v);
-    return v;
-  }
-  fprintf(stderr, "Ptr is not defined.");
-  exit(-1);
-}
-
-Vector* leaves_normalized(Ptr *p, Vector *atoms){
+Vector* leaves(Ptr *p, Vector *atoms){
   if (p->op_type == ATOM){
     vector_push(atoms, p->op.atom->code);
     return atoms;
   }
 
   else if (p->op_type == CONC){
-    leaves_normalized(p->op.conc->left, atoms);
-    leaves_normalized(p->op.conc->right, atoms);
+    leaves(p->op.conc->left, atoms);
+    leaves(p->op.conc->right, atoms);
     return atoms;
   }
 
