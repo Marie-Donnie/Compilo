@@ -19,6 +19,7 @@ bool set_is_member(Set *set, void *e);
 Set* set_add(Set *set, void *e);
 Set* set_union(Set *set1, Set *set2);
 Set* set_remove(Set *set, void *e);
+bool set_equal(Set *a, Set *b);
 
 extern bool set_is_equal(void *a, void *b);
 

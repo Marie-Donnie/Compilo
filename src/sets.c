@@ -70,3 +70,16 @@ Set* set_remove(Set *set, void *e){
   }
   return set;
 }
+
+bool set_equal(Set *a, Set *b){
+  if (set_length(a) != set_length(b)){
+    return false;
+  }
+
+  for (int i = 0; i < set_length(a); i++){
+    if (!set_is_member(b, a->set[i])){
+      return false;
+    }
+  }
+  return true;
+}

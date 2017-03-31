@@ -35,6 +35,17 @@ MU_TEST(sets) {
   Set *s7 = set_remove(s6, "B");
   mu_check(set_length(s7) == 1);
   mu_check(set_is_member(s7, "B") == false);
+
+  // Equality
+  mu_check(set_equal(empty_set(), empty_set()));
+
+  Set *s8 = empty_set();
+  set_add(s8, "A");
+  set_add(s8, "B");
+  Set *s9 = empty_set();
+  set_add(s9, "B");
+  set_add(s9, "A");
+  mu_check(set_equal(s8, s9));
 }
 
 MU_TEST(vectors) {
