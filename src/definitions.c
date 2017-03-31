@@ -101,12 +101,13 @@ Ptr* gen_F(){
 }
 
 void gen_Forest() {
-  A = empty_vector();
-  vector_push(A,gen_rule("S", gen_S()));
-  vector_push(A,gen_rule("N", gen_N()));
-  vector_push(A,gen_rule("E", gen_E()));
-  vector_push(A,gen_rule("T", gen_T()));
-  vector_push(A,gen_rule("F", gen_F()));
+  Vector *G = empty_vector();
+  vector_push(G,gen_rule("S", gen_S()));
+  vector_push(G,gen_rule("N", gen_N()));
+  vector_push(G,gen_rule("E", gen_E()));
+  vector_push(G,gen_rule("T", gen_T()));
+  vector_push(G,gen_rule("F", gen_F()));
+  A = normalize_grammar(G);
 }
 
 Rule* gen_rule(char *head, Ptr *body){
