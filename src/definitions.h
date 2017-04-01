@@ -9,9 +9,32 @@
 
 /*------------------- DECLARATION -------------------------*/
 
-typedef enum atomType {TERMINAL, NON_TERMINAL} AtomType;
-typedef enum operation {CONC, UNION, STAR, UN, ATOM} Op;
-typedef enum cod {ELTER, IDNTER} Code;
+/** \enum AtomType
+ *  \brief Describes the type of an atom
+ */
+typedef enum atomType {
+  TERMINAL,     /**< Atom contains a Terminal */
+  NON_TERMINAL  /**< Atom contains a Non-Terminal */
+} AtomType;
+
+/** \enum Op
+ *  \brief Describes the operations available for the grammar
+ */
+typedef enum operation {
+  CONC,        /**< Concatenation: '.' */
+  UNION,       /**< Union: '+' $\equiv$ | */
+  STAR,        /**< Star: [ ] $\equiv$ * */
+  UN,          /**< Un: (| |) $\equiv$ ? */
+  ATOM         /**< Atom: ELTER or IDNTER (cf Code)*/
+} Op;
+
+/** \enum Code
+ *  \brief Describes whether an atom contains a Terminal or Non-Terminal
+ */
+typedef enum cod {ELTER, /**< Terminal element */
+		  IDNTER /**< Non-Terminal element */
+} Code;
+
 #define TER_SIZE 10
 #define ARRAY_SIZE 50
 
@@ -44,8 +67,11 @@ typedef struct satom{
   AtomType a_type;
 } Atom;
 
+/** \struct Ptr
+ *  \brief Describes the Ptr
+ */
 struct ptr{
-  Op op_type;
+  Op op_type;     /**< The operation contained (cf Op enum) */
   union {
     Conc *conc;
     Union *uni;
