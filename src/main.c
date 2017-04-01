@@ -49,6 +49,8 @@ void test_g0(){
 }
 
 void test_parser(){
+  int index;
+  init_stack();
   scan();
   Rule *S = vector_get(A, 0);
   if (parse(S->body)) {
@@ -56,6 +58,13 @@ void test_parser(){
   } else {
     printf("Parse error\n");
   }
+  printf("Number of parsed rules: %d\n", vector_length(A)-5);
+  for (index = 5 ; index < vector_length(A) ; index++) {
+    Rule *r = vector_get(A, index);
+    printf("Rule %s:\n", r->head);
+    print_ptr(r->body, 0);
+  }
+
 }
 
 

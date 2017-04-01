@@ -49,4 +49,52 @@ bool parse(Ptr *p){
   return false;
 }
 
-void g0_action(int action){}
+Vector *stack;
+
+void g0_action(int action){
+  Ptr *t1, *t2;
+  switch(action){
+  case 1:
+    t1 = pop();
+    t2 = pop();
+    Rule *r = gen_rule(t2->op.atom->code, t1);
+    vector_push(A, r);
+    break;
+  case 2:
+    push(gen_atom(scan_token()->str,0, NON_TERMINAL));
+    break;
+  case 3:
+    t1 = pop();
+    t2 = pop();
+    push(gen_union(t2, t1));
+    break;
+  case 4:
+    t1 = pop();
+    t2 = pop();
+    push(gen_conc(t2, t1));
+    break;
+  case 5:
+    push(gen_atom(scan_token()->str,0, TERMINAL));
+    break;
+  case 6:
+    t1 = pop();
+    push(gen_star(t1));
+    break;
+  case 7:
+    t1 = pop();
+    push(gen_un(t1));
+    break;
+  }
+}
+
+void push(Ptr *p){
+  vector_push(stack, p);
+}
+
+Ptr* pop(){
+  return vector_pop(stack);
+}
+
+void init_stack(){
+  stack = empty_vector();
+}

@@ -42,6 +42,15 @@ Vector* vector_push(Vector *v, void *e){
   return v;
 }
 
+void* vector_pop(Vector *v){
+  if (vector_length(v) > 0){
+    v->nb_elts--;
+    return v->elts[v->nb_elts];
+  }
+  fail("vector_pop: vector is empty");
+  exit(7);
+}
+
 Vector* vector_concat(Vector *v, Vector *u){
   size_t i;
   for (i = 0 ; i < u->nb_elts ; i++){

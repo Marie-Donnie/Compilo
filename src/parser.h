@@ -18,6 +18,9 @@ void recherche(char *dico, char *atrouver);
 
 void g0_action(int action);
 
-
+void push(Ptr *p);
+Ptr* pop();
+void lookup(char *elt);
+void init_stack();
 
 #endif // PARSER_H

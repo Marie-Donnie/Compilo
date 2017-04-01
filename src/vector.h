@@ -21,6 +21,8 @@ void* vector_get(Vector *v, int index);
 bool vector_is_member(Vector *v, void *e);
 
 Vector* vector_push(Vector *v, void *e);
+void* vector_pop(Vector *v);
+
 Vector* vector_concat(Vector *v, Vector *u);
 
 # endif // VECTOR_H

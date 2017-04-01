@@ -88,7 +88,7 @@ Ptr* gen_T(){
 }
 
 Ptr* gen_F(){
-  return gen_union(gen_atom("IDNTER",5,TERMINAL),
+  return gen_union(gen_atom("IDNTER",2,TERMINAL),
 		   gen_union(gen_atom("ELTER",5,TERMINAL),
 			     gen_union(gen_conc(gen_conc(gen_atom("(",0,TERMINAL),
 							 gen_atom("E",0,NON_TERMINAL)),
@@ -237,7 +237,7 @@ void print_conc(Conc *c, int indent){
 
 void print_star(Star *s, int indent){
   print_indent(indent);
-  printf(">Star \n");
+  printf("> Star \n");
   print_ptr(s->stare, indent+3);
 }
 
@@ -250,7 +250,7 @@ void print_union(Union *u, int indent){
 
 void print_un(Un *un, int indent){
   print_indent(indent);
-  printf(">Un \n");
+  printf("> Un \n");
   print_ptr(un->une, indent+3);
 }
 
