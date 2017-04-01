@@ -68,6 +68,12 @@ MU_TEST(lexer) {
   Token *t1 = gen_token("IDNTER", "A");
   mu_check(!strcmp(t1->type, "IDNTER"));
   mu_check(!strcmp(t1->str, "A"));
+  mu_check(t1->action == 0);
+
+  Token *t2 = gen_token("IDNTER", "foo#42");
+  mu_check(!strcmp(t2->type, "IDNTER"));
+  mu_check(!strcmp(t2->str, "foo"));
+  mu_check(t2->action == 42);
 
   char *input = "Ident42 ->       +(|'rter'|)(ident)'abc' ['ab'] '' ,;";
   Token *output[] = {

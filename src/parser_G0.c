@@ -1,6 +1,4 @@
 #include "parser_G0.h"
-#include <assert.h>
-
 
 
 /*------------------- PARSE -------------------------*/
@@ -53,6 +51,7 @@ Vector *stack;
 
 void g0_action(int action){
   Ptr *t1, *t2;
+  Token *t;
   switch(action){
   case 1:
     t1 = pop();
@@ -61,7 +60,8 @@ void g0_action(int action){
     vector_push(A, r);
     break;
   case 2:
-    push(gen_atom(scan_token()->str,0, NON_TERMINAL));
+    t = scan_token();
+    push(gen_atom(t->str, t->action, NON_TERMINAL));
     break;
   case 3:
     t1 = pop();
@@ -74,7 +74,8 @@ void g0_action(int action){
     push(gen_conc(t2, t1));
     break;
   case 5:
-    push(gen_atom(scan_token()->str,0, TERMINAL));
+    t = scan_token();
+    push(gen_atom(t->str, t->action, TERMINAL));
     break;
   case 6:
     t1 = pop();

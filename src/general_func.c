@@ -19,8 +19,9 @@ char* read_file(char *path){
   long buffer_size;
   file = fopen(path, "r");
   buffer_size = char_count(file);
-  buffer = malloc(buffer_size*sizeof(char));
+  buffer = malloc((buffer_size + 1)*sizeof(char));
   fread(buffer, sizeof(char), buffer_size, file);
+  buffer[buffer_size] = '\0';
   fclose(file);
   return buffer;
 }

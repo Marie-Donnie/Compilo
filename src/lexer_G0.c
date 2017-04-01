@@ -87,7 +87,7 @@ Token* lex(char *string, int *index){
 	count++;
 	c = string + *index + count;
       }
-      while (is_letter(*c) || is_digit(*c));
+      while (is_letter(*c) || is_digit(*c) || (*c=='#'));
       str = malloc(sizeof(char)*(count+1));
       strncpy(str, string + *index, count);
       str[count] = '\0';
@@ -120,7 +120,15 @@ Token *scan_token(){
 
 Token* gen_token(char *type, char* str){
   Token *t = check_malloc(sizeof(Token));
+  char *s = index(str, '#');
+  if (s != NULL){
+    t->str = strndup(str, s - str);
+    t->action = atoi(s+1);
+  }
+  else {
+    t->str = str;
+    t->action = 0;
+  }
   t->type = type;
-  t->str = str;
   return t;
 }

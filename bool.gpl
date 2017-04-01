@@ -1,4 +1,4 @@
-INST -> ident . ':=' . EXP,
+INST -> ident . ':=' . EXP#1,
 BOOLEANEXP -> TB . [ '||' . TB ],
 TB -> FB . [ '&&' . FB ],
 FB -> PB + '!' . PB,
@@ -9,4 +9,5 @@ IF -> 'if' . BOOLEANEXP . 'then' . INST . ELSE,
 ELSE -> (| 'else' . INST |),
 EXP -> BOOLEANEXP + NUMEXP,
 NUMEXP -> number . OPNUM . number,
+OPNUM -> '+' + '-',
 ;

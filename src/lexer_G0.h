@@ -7,6 +7,7 @@ extern char* END_FILE_STR;
 typedef struct {
   char *type;
   char *str;
+  int action;
 } Token;
 
 
