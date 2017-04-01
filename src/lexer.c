@@ -16,9 +16,8 @@ bool is_digit(char c){
 
 
 /*------------------- LEX G0 -------------------------*/
-Token lex(char *string, int *index){
-  Token token;
-  token.str = NULL;
+Token* lex(char *string, int *index){
+  char *str;
   int count = 0;
   char *c = string + *index;
   while ( *(c = string + *index) != '\0'){
@@ -28,58 +27,47 @@ Token lex(char *string, int *index){
     }
     else if (*c == '.'){
       *index += 1;
-      token.type = POINT;
-      return token;
+      return gen_token(".", ".");
     }
     else if (*c == ','){
       *index += 1;
-      token.type = COMMA;
-      return token;
+      return gen_token(",", ",");
     }
     else if (*c == ';'){
       *index += 1;
-      token.type = SEMI_COLON;
-      return token;
+      return gen_token(";", ";");
     }
     else if (*c == '-' && *(c+1) == '>'){
       *index += 2;
-      token.type = ARROW;
-      return token;
+      return gen_token("->", "->");
     }
     else if (*c  == '+'){
       *index += 1;
-      token.type = PLUS;
-      return token;
+      return gen_token("+", "+");
     }
     else if (*c == '['){
       *index += 1;
-      token.type = L_BRACKET;
-      return token;
+      return gen_token("[", "[");
     }
     else if (*c == ']'){
       *index += 1;
-      token.type = R_BRACKET;
-      return token;
+      return gen_token("]", "]");
     }
     else if (*c == '(' && *(c+1) != '|'){
       *index += 1;
-      token.type = L_PAREN;
-      return token;
+      return gen_token("(", "(");
     }
     else if (*c == ')'){
       *index += 1;
-      token.type = R_PAREN;
-      return token;
+      return gen_token(")", ")");
     }
     else if (*c == '(' && *(c+1) == '|'){
       *index += 2;
-      token.type = L_PAREN_BAR;
-      return token;
+      return gen_token("(|", "(|");
     }
     else if (*c == '|' && *(c+1) == ')'){
       *index += 2;
-      token.type = R_PAREN_BAR;
-      return token;
+      return gen_token("|)", "|)");
     }
     else if (*c == '\''){
       count = 0;
@@ -87,12 +75,11 @@ Token lex(char *string, int *index){
       while (*(string + *index + count) != '\''){
 	count++;
       }
-      token.str = malloc(sizeof(char)*(count+1)); // +1 for \0
-      strncpy(token.str, string + *index, count);
-      token.str[count] = '\0';
-      token.type = TER;
+      str = malloc(sizeof(char)*(count+1)); // +1 for \0
+      strncpy(str, string + *index, count);
+      str[count] = '\0';
       *index += count + 1; // +1 for '
-      return token;
+      return gen_token("ELTER", str);
     }
     else if (is_letter(*c)){
       count = 0;
@@ -101,21 +88,38 @@ Token lex(char *string, int *index){
 	c = string + *index + count;
       }
       while (is_letter(*c) || is_digit(*c));
-      token.str = malloc(sizeof(char)*(count+1));
-      strncpy(token.str, string + *index, count);
-      token.str[count] = '\0';
-      token.type = IDENT;
+      str = malloc(sizeof(char)*(count+1));
+      strncpy(str, string + *index, count);
+      str[count] = '\0';
       *index += count;
-      return token;
+      return gen_token("IDNTER", str);
     }
   }
-  token.type = END_FILE;
-  token.str = END_FILE_STR;
-  return token;
+  return gen_token(END_FILE_STR, END_FILE_STR);
 }
 
-Token* gen_token(TokenType type, char* str){
-  Token *t = malloc(sizeof(Token));
+struct scan_state_t {
+  char *buffer;
+  int index;
+  Token *token;
+} scan_state;
+
+void scan(){
+  scan_state.token = lex(scan_state.buffer, &scan_state.index);
+}
+
+void init_scan(char *input){
+  scan_state.index = 0;
+  scan_state.buffer = input;
+}
+
+Token *scan_token(){
+  return scan_state.token;
+}
+
+
+Token* gen_token(char *type, char* str){
+  Token *t = check_malloc(sizeof(Token));
   t->type = type;
   t->str = str;
   return t;

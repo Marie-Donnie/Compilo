@@ -70,3 +70,7 @@ Set* set_remove(Set *set, void *e){
   }
   return set;
 }
+
+bool set_is_equal(void *e, void *f){
+  return e == f;
+}

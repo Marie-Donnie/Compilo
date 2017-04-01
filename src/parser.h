@@ -5,24 +5,18 @@
 #include "definitions.h"
 #include "hashmap.h"
 
-extern char *EPS;
-extern map_t *parsing_table;
+/*------------------- ANALYZE -------------------------*/
+extern char *code;
 
-Set* first(char *head);
-Set* first_ptr(Ptr *p);
-Set* follow(char *head);
-Set* set_union_eps(Set *set1, Set *set2);
-Ptr* get_production(char *code);
-bool is_equal(char *ter1, char *ter2);
-int index_of(char *ter, Vector *v);
+bool parse(Ptr* p);
 
+/*------------------- ACTION -------------------------*/
 
-/*------------------- PARSING_TABLE -------------------------*/
+void empiler(Ptr *pile, Ptr *T);
+void depiler(Ptr *pile, Ptr *T);
+void recherche(char *dico, char *atrouver);
 
-void init_parsing_table();
-void parsing_table_put(char *head, char *ter, Rule *r);
-Rule* parsing_table_get(char *head, char *ter);
-
+void g0_action(int action);
 
 
 

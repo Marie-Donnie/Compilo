@@ -18,6 +18,7 @@ void* vector_get(Vector *v, int index){
     return v->elts[index];
   }
   fail("vector_get: index ouf of range");
+  exit(9);
 }
 
 bool vector_is_member(Vector *v, void *e){

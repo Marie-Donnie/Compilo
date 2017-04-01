@@ -65,191 +65,72 @@ MU_TEST(vectors) {
 }
 
 MU_TEST(lexer) {
-  Token *t1 = gen_token(IDENT, "A");
-  mu_check(t1->type == IDENT);
+  Token *t1 = gen_token("IDNTER", "A");
+  mu_check(!strcmp(t1->type, "IDNTER"));
   mu_check(!strcmp(t1->str, "A"));
 
   char *input = "Ident42 ->       +(|'rter'|)(ident)'abc' ['ab'] '' ,;";
   Token *output[] = {
-    gen_token(IDENT, "Ident42"),
-    gen_token(ARROW, NULL),
-    gen_token(PLUS, NULL),
-    gen_token(L_PAREN_BAR, NULL),
-    gen_token(TER, "rter"),
-    gen_token(R_PAREN_BAR, NULL),
-    gen_token(L_PAREN, NULL),
-    gen_token(IDENT, "ident"),
-    gen_token(R_PAREN, NULL),
-    gen_token(TER, "abc"),
-    gen_token(L_BRACKET, NULL),
-    gen_token(TER, "ab"),
-    gen_token(R_BRACKET, NULL),
-    gen_token(TER, ""),
-    gen_token(COMMA, NULL),
-    gen_token(SEMI_COLON, NULL),
-    gen_token(END_FILE, END_FILE_STR),
+    gen_token("IDNTER", "Ident42"),
+    gen_token("->", "->"),
+    gen_token("+", "+"),
+    gen_token("(|", "(|"),
+    gen_token("ELTER", "rter"),
+    gen_token("|)", "|)"),
+    gen_token("(", "("),
+    gen_token("IDNTER", "ident"),
+    gen_token(")", ")"),
+    gen_token("ELTER", "abc"),
+    gen_token("[", "["),
+    gen_token("ELTER", "ab"),
+    gen_token("]", "]"),
+    gen_token("ELTER", ""),
+    gen_token(",", ","),
+    gen_token(";", ";"),
+    gen_token(END_FILE_STR, END_FILE_STR),
   };
   size_t i = 0;
   size_t out_len = sizeof(output) / sizeof(Token*);
   int index = 0;
-  Token t;
+  Token *t;
 
   do {
     t = lex(input, &index);
     mu_check(i < out_len);
-    mu_check(t.type == output[i]->type);
-    if (t.str == NULL) {
-      mu_check(output[i]->str == NULL);
-    }
-    else {
-      mu_check(output[i]->str != NULL);
-      mu_check(!strcmp(t.str, output[i]->str));
-    }
-    i++;
-  } while (t.type != END_FILE);
+    mu_check(!strcmp(t->type, output[i]->type));
+     mu_check(!strcmp(t->str, output[i]->str));
+     i++;
+  } while (t->type != END_FILE_STR);
 }
 
-MU_TEST(leaves_test) {
-  // Atom
-  Vector *v = leaves(gen_atom("a", 0, TERMINAL), empty_vector());
-  // {{a}}
-  mu_check(vector_length(v) == 1);
-  mu_check(vector_length(vector_get(v, 0)) == 1);
-  mu_check(!strcmp(vector_get(vector_get(v, 0), 0), "a"));
+MU_TEST(parser){
+  gen_forest();
+  Rule *S = vector_get(A, 0);
 
-  // Conc
-  v = leaves(gen_conc(gen_atom("a", 0, TERMINAL),
-		      gen_atom("b", 0, TERMINAL)), empty_vector());
-  // {{a, b}}
-  mu_check(vector_length(v) == 1);
-  mu_check(vector_length(vector_get(v, 0)) == 2);
-  mu_check(!strcmp(vector_get(vector_get(v, 0), 0), "a"));
-  mu_check(!strcmp(vector_get(vector_get(v, 0), 1), "b"));
+  init_scan("S -> 'a',;");
+  scan();
+  mu_check(parse(S->body));
 
-  // Union
-  v = leaves(gen_union(gen_atom("a", 0, TERMINAL),
-		       gen_atom("b", 0, TERMINAL)), empty_vector());
-  // {{a}, {b}}
-  mu_check(vector_length(v) == 2);
-  mu_check(vector_length(vector_get(v, 0)) == 1);
-  mu_check(!strcmp(vector_get(vector_get(v, 0), 0), "a"));
-  mu_check(vector_length(vector_get(v, 1)) == 1);
-  mu_check(!strcmp(vector_get(vector_get(v, 1), 0), "b"));
+  init_scan("S0 -> ['animal'] . 'bateau' ,;");
+  scan();
+  mu_check(parse(S->body));
 
-  // Star
-  v = leaves(gen_star(gen_atom("a", 0, TERMINAL)), empty_vector());
-  // {???}
-  mu_fail("not written");
-  /* mu_check(vector_length(v) == 1); */
-  /* mu_check(vector_length(vector_get(v, 0)) == 2); */
-  /* mu_check(!strcmp(vector_get(vector_get(v, 0), 0), "a")); */
-  /* mu_check(!strcmp(vector_get(vector_get(v, 0), 1), EPS)); */
+  init_scan("S0 -> ['a'] . 'b' + S1, \n S1 -> S1,;");
+  scan();
+  mu_check(parse(S->body));
 
-  // Un
-  v = leaves(gen_un(gen_atom("a", 0, TERMINAL)), empty_vector());
-  // {???}
-  mu_fail("not written");
-  /* mu_check(vector_length(v) == 1); */
-  /* mu_check(vector_length(vector_get(v, 0)) == 2); */
-  /* mu_check(!strcmp(vector_get(vector_get(v, 0), 0), "a")); */
-  /* mu_check(!strcmp(vector_get(vector_get(v, 0), 1), EPS)); */
+  init_scan("S");
+  scan();
+  mu_check(!parse(S->body));
+
 }
 
-MU_TEST(first_test) {
-  A = empty_vector();
-  // A -> a
-  vector_push(A, gen_rule("A", gen_atom("a", 0, TERMINAL)));
-  Set *s = first("A");
-  // {a}
-  mu_check(set_length(s) == 1);
-  mu_check(set_is_member(s, "a"));
-
-  // B -> b0 + b1
-  vector_push(A, gen_rule("B", gen_union(gen_atom("b0", 0, TERMINAL),
-					 gen_atom("b1", 0, TERMINAL))));
-  s = first("B");
-  // {b0, b1}
-  mu_check(set_length(s) == 2);
-  mu_check(set_is_member(s, "b0"));
-  mu_check(set_is_member(s, "b1"));
-
-  // C -> c0 . c1
-  vector_push(A, gen_rule("C", gen_conc(gen_atom("c0", 0, TERMINAL),
-					gen_atom("c1", 0, TERMINAL))));
-  s = first("C");
-  // {c0}
-  mu_check(set_length(s) == 1);
-  mu_check(set_is_member(s, "c0"));
-
-  // D -> [d]
-  vector_push(A, gen_rule("D", gen_star(gen_atom("d", 0, TERMINAL))));
-  s = first("D");
-  // {d, EPS}
-  mu_check(set_length(s) == 2);
-  mu_check(set_is_member(s, "d"));
-  mu_check(set_is_member(s, EPS));
-
-  // E -> (|e|)
-  vector_push(A, gen_rule("E", gen_un(gen_atom("e", 0, TERMINAL))));
-  s = first("E");
-  // {e, EPS}
-  mu_check(set_length(s) == 2);
-  mu_check(set_is_member(s, "e"));
-  mu_check(set_is_member(s, EPS));
-
-  // G0
-  gen_Forest();
-  s = first("F");
-  // {IDNTER, ELTER, (, [, (|}
-  mu_check(set_length(s) == 5);
-  mu_check(set_is_member(s, "IDNTER"));
-  mu_check(set_is_member(s, "ELTER"));
-  mu_check(set_is_member(s, "("));
-  mu_check(set_is_member(s, "["));
-  mu_check(set_is_member(s, "(|"));
-
-  s = first("S");
-  // {IDNTER, ;}
-  mu_check(set_length(s) == 2);
-  mu_check(set_is_member(s, "IDNTER"));
-  mu_check(set_is_member(s, ";"));
-}
-
-MU_TEST(follow_test) {
-  A = empty_vector();
-  // S -> [A]b
-  // A -> a
-  vector_push(A, gen_rule("S", gen_conc(gen_star(gen_atom("A", 0, NON_TERMINAL)),
-					gen_atom("b", 0, TERMINAL))));
-  vector_push(A, gen_rule("A", gen_atom("a", 0, TERMINAL)));
-  Set *s = follow("A");
-  // {b}
-  mu_check(set_length(s) == 1);
-  mu_check(set_is_member(s, "b"));
-
-  // G0
-  gen_Forest();
-  s = follow("S");
-  // {$}
-  mu_check(set_length(s) == 1);
-  mu_check(set_is_member(s, END_FILE_STR));
-
-  s = follow("E");
-  // {,, ), ], |)}
-  mu_check(set_length(s) == 4);
-  mu_check(set_is_member(s, ","));
-  mu_check(set_is_member(s, ")"));
-  mu_check(set_is_member(s, "]"));
-  mu_check(set_is_member(s, "|)"));
-}
 
 int main() {
   MU_RUN_TEST(sets);
   MU_RUN_TEST(vectors);
   MU_RUN_TEST(lexer);
-  MU_RUN_TEST(leaves_test);
-  MU_RUN_TEST(first_test);
-  MU_RUN_TEST(follow_test);
+  MU_RUN_TEST(parser);
   MU_REPORT();
   return 0;
 }

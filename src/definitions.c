@@ -65,44 +65,44 @@ Ptr* gen_un(Ptr *p1){
 
 Ptr* gen_S(){
   return gen_conc(gen_star(gen_conc(gen_conc(gen_conc(gen_atom("N",0,NON_TERMINAL),
-						      gen_atom("Fleche",0,TERMINAL)),
+						      gen_atom("->",0,TERMINAL)),
 					     gen_atom("E",0,NON_TERMINAL)),
 				    gen_atom(",",1,TERMINAL))),
 		  gen_atom(";",0,TERMINAL));
 }
 
 Ptr* gen_N(){
-  return gen_atom("IDNTER",0,TERMINAL);
+  return gen_atom("IDNTER",2,TERMINAL);
 }
 
 Ptr* gen_E(){
-  return gen_conc(gen_star(gen_conc(gen_atom("T",0,NON_TERMINAL),
-				    gen_atom("+",0,TERMINAL))),
-		  gen_atom("T",0,NON_TERMINAL));
+  return gen_conc(gen_atom("T",0,NON_TERMINAL),
+		  gen_star(gen_conc(gen_atom("+",0,TERMINAL),
+				    gen_atom("T",3,NON_TERMINAL))));
 }
 
 Ptr* gen_T(){
-  return gen_conc(gen_star(gen_conc(gen_atom("F",0,NON_TERMINAL),
-				    gen_atom(".",0,TERMINAL))),
-		  gen_atom("F",0,NON_TERMINAL));
+  return gen_conc(gen_atom("F",0,NON_TERMINAL),
+		  gen_star(gen_conc(gen_atom(".",0,TERMINAL),
+				    gen_atom("F",4,NON_TERMINAL))));
 }
 
 Ptr* gen_F(){
-  return gen_union(gen_atom("IDNTER",0,TERMINAL),
-		   gen_union(gen_atom("ELTER",0,TERMINAL),
+  return gen_union(gen_atom("IDNTER",5,TERMINAL),
+		   gen_union(gen_atom("ELTER",5,TERMINAL),
 			     gen_union(gen_conc(gen_conc(gen_atom("(",0,TERMINAL),
 							 gen_atom("E",0,NON_TERMINAL)),
 						gen_atom(")",0,TERMINAL)),
 				       gen_union(gen_conc(gen_conc(gen_atom("[",0,TERMINAL),
 								   gen_atom("E",0,NON_TERMINAL)),
-							  gen_atom("]",0,TERMINAL)),
+							  gen_atom("]",6,TERMINAL)),
 						 gen_conc(gen_conc(gen_atom("(|",0,TERMINAL),
 								   gen_atom("E",0,NON_TERMINAL)),
-							  gen_atom("|)",0,TERMINAL)))
+							  gen_atom("|)",7,TERMINAL)))
 						 )));
 }
 
-void gen_Forest() {
+void gen_forest() {
   A = empty_vector();
   vector_push(A,gen_rule("S", gen_S()));
   vector_push(A,gen_rule("N", gen_N()));
@@ -152,47 +152,6 @@ size_t get_A_length(){
   }
   else return (A->nb_elts -5);
 
-}
-
-/*------------------- PTR SPECIFIC FUNCTIONS -----------------------*/
-
-Vector* leaves(Ptr *p, Vector *v){
-  size_t i, j;
-  if (p->op_type == ATOM){
-    Vector *u = empty_vector();
-    vector_push(u, p->op.atom->code);
-    return vector_push(v, u);
-  }
-  else if (p->op_type == CONC){
-    Vector *left = leaves(p->op.conc->left, empty_vector());
-    Vector *right = leaves(p->op.conc->right, empty_vector());
-    for (i = 0 ; i < left->nb_elts ; i++){
-      for (j = 0 ; j < right->nb_elts ; j++){
-	Vector *u = empty_vector();
-	vector_concat(u, left->elts[i]);
-	vector_concat(u, right->elts[j]);
-	vector_push(v, u);
-      }
-    }
-    return v;
-  }
-  else if (p->op_type == UNION){
-    leaves(p->op.conc->left, v);
-    Vector *u = leaves(p->op.conc->right, empty_vector());
-    vector_concat(v,u);
-    return v;
-  }
-  else if (p->op_type == STAR){
-    leaves(p->op.star->stare, v);
-    return v;
-  }
-
-  else if (p->op_type == UN){
-    leaves(p->op.un->une, v);
-    return v;
-  }
-  fprintf(stderr, "Ptr is not defined.");
-  exit(-1);
 }
 
 /*------------------- DESTRUCTION -------------------------*/

@@ -32,15 +32,15 @@ void test_A(){
 
 void test_lexer(char *buffer){
  int idx = 0;
- Token t;
-    do {
-    t = lex(buffer, &idx);
-    printf("%d Token type = %d, ", idx, t.type);
-    if (t.str){
-      printf("Token str = %s", t.str);
-    }
-    printf("\n");
-  } while (t.type != END_FILE);
+ Token *t;
+ do {
+   t = lex(buffer, &idx);
+   printf("%d Token type = %s, ", idx, t->type);
+   if (t->str){
+     printf("Token str = %s", t->str);
+   }
+   printf("\n");
+ } while (strcmp(t->type, END_FILE_STR));
 }
 
 void test_g0(){
@@ -49,33 +49,12 @@ void test_g0(){
 }
 
 void test_parser(){
-  size_t i;
-  /* const Set *set = first(gen_star(gen_conc(gen_atom("T",0,NON_TERMINAL), */
-  /* 					   gen_atom("+",0,TERMINAL)))); */
-  /* const Set *set = first(gen_conc(gen_star(gen_conc(gen_atom("T",0,NON_TERMINAL), */
-  /* 						    gen_atom("+",0,TERMINAL))), */
-  /* 				  gen_atom("T2",0,TERMINAL))); */
-  printf("Testing first:\n");
-  Set *set = first("E");
-  print_set(set);
-  printf("Testing follow:\n");
-  Set *set2 = follow("E");
-  print_set(set2);
-  printf("Testing parsing table:\n");
-  init_parsing_table();
-  Rule *r = parsing_table_get("F", "[");
-  printf("Head for M[F,'[']:%s.\n", r->head);
-  print_ptr(r->body, 0);
-}
-
-void test_leaves(){
-  size_t i;
-  Vector *u = leaves(gen_conc(gen_atom("T",0,NON_TERMINAL),
-			      gen_atom("+",0,TERMINAL)),
-		     empty_vector());
-  Vector *v = leaves(gen_F(), empty_vector());
-  for (i = 0 ; i < v->nb_elts ; i++){
-    print_vector(v->elts[i]);
+  scan();
+  Rule *S = vector_get(A, 0);
+  if (parse(S->body)) {
+    printf("Parse ok\n");
+  } else {
+    printf("Parse error\n");
   }
 }
 
@@ -103,17 +82,18 @@ int main(int argc, char **argv){
   path = argv[1];
 
   printf("/*------------------ FOREST ------------------*/\n");
-  gen_Forest();
+  gen_forest();
   test_A();
 
   buffer = read_file(path);
+
+  init_scan(buffer);
+
   printf("Buffer:\n%s\n", buffer);
   printf("/*------------------ LEXER ------------------*/\n");
   test_lexer(buffer);
   printf("/*------------------ PARSER ------------------*/\n");
   test_parser();
-  printf("/*------------------ LEAVES ------------------*/\n");
-  test_leaves();
 
 
   return EXIT_SUCCESS;

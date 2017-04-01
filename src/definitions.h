@@ -28,12 +28,6 @@ typedef enum operation {
   ATOM         /**< Atom: ELTER or IDNTER (cf Code)*/
 } Op;
 
-/** \enum Code
- *  \brief Describes whether an atom contains a Terminal or Non-Terminal
- */
-typedef enum cod {ELTER, /**< Terminal element */
-		  IDNTER /**< Non-Terminal element */
-} Code;
 
 #define TER_SIZE 10
 #define ARRAY_SIZE 50
@@ -81,14 +75,7 @@ struct ptr{
   } op;
 };
 
-/*------------------- LEXICAL UNIT -------------------------*/
-
-typedef struct sl_u {
-  Code code;
-  int action;
-  AtomType type;
-  char* str;
-} Lexical_unit ;
+/*------------------- RULE -------------------------*/
 
 typedef struct {
   char *head;
@@ -111,16 +98,13 @@ Ptr* gen_E();
 Ptr* gen_T();
 Ptr* gen_F();
 
-void gen_Forest();
+void gen_forest();
 Rule* gen_rule(char *head, Ptr *body);
 Rule *get_rule(size_t index);
 Rule* get_rule_by_head(char *head);
 Rule* get_rule_by_head_lax(char *head);
 size_t get_A_length();
 
-/*------------------- PTR SPECIFIC FUNCTIONS -----------------------*/
-
-Vector* leaves(Ptr *p, Vector *v);
 
 /*------------------- DESTRUCTION -------------------------*/
 
@@ -144,16 +128,5 @@ void print_atom_type(AtomType at);
 void print_ptr(Ptr *p, int indent);
 
 
-/*------------------- ANALYZE -------------------------*/
-
-bool analyze(Ptr* p);
-
-/*------------------- ACTION -------------------------*/
-
-void empiler(Ptr *pile, Ptr *T);
-void depiler(Ptr *pile, Ptr *T);
-void recherche(char *dico, char *atrouver);
-
-void go_action(int action);
 
 #endif // DEFINITIONS_H
