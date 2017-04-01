@@ -10,6 +10,11 @@ typedef struct {
   int action;
 } Token;
 
+struct scan_state_t {
+  char *buffer;
+  int index;
+  Token *token;
+} scan_state;
 
 /*------------------- CHAR RECOGNITION -------------------------*/
 
@@ -25,5 +30,6 @@ Token* gen_token(char *type, char* str);
 void scan();
 void init_scan(char *input);
 Token* scan_token();
+
 
 #endif //LEXER_H

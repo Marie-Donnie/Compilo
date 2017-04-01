@@ -102,3 +102,9 @@ Token* lex_GPL(char *string, int *index){
   }
   return gen_token(END_FILE_STR, END_FILE_STR);
 }
+
+
+
+void scan_GPL(){
+  scan_state.token = lex_GPL(scan_state.buffer, &scan_state.index);
+}

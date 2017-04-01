@@ -98,12 +98,6 @@ Token* lex(char *string, int *index){
   return gen_token(END_FILE_STR, END_FILE_STR);
 }
 
-struct scan_state_t {
-  char *buffer;
-  int index;
-  Token *token;
-} scan_state;
-
 void scan(){
   scan_state.token = lex(scan_state.buffer, &scan_state.index);
 }

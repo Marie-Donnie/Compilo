@@ -2,7 +2,7 @@
 #include "parser_G0.h"
 #include "general_func.h"
 #include "lexer_GPL.h"
-
+#include "parser_GPL.h"
 
 /*------------------- PRINT FUNC -------------------------*/
 
@@ -74,6 +74,17 @@ void test_lexer_GPL(char *buffer){
  } while (strcmp(t->type, END_FILE_STR));
 }
 
+void test_parser_GPL(){
+  init_stack();
+  scan_GPL();
+  Rule *r = vector_get(A, 5);
+  if (parse_GPL(r->body)) {
+    printf("Parse ok\n");
+  } else {
+    printf("Parse error\n");
+  }
+}
+
 
 /*------------------- MAIN -------------------------*/
 
@@ -109,11 +120,11 @@ int main(int argc, char **argv){
   printf("Buffer:\n%s\n", buffer);
 
 
-  printf("/*------------------ LEXER ------------------*/\n");
+  printf("/*------------------ LEXER_G0 ------------------*/\n");
   test_lexer(buffer);
 
 
-  printf("/*------------------ PARSER ------------------*/\n");
+  printf("/*------------------ PARSER_G0 ------------------*/\n");
   init_scan(buffer);
   test_parser();
 
@@ -122,12 +133,11 @@ int main(int argc, char **argv){
 
   pgm = read_file(pgm_path);
 
-  init_scan(pgm);
-
   printf("Program:\n%s\n", pgm);
 
   test_lexer_GPL(pgm);
-
+  init_scan(pgm);
+  test_parser_GPL();
 
   return EXIT_SUCCESS;
 }

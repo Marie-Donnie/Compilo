@@ -7,4 +7,6 @@
 
 Token* lex_GPL(char *string, int *index);
 
+void scan_GPL();
+
 #endif //LEXER_GPL_H
