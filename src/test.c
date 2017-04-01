@@ -2,8 +2,8 @@
 #include "minunit.h"
 #include "sets.h"
 #include "vector.h"
-#include "lexer.h"
-#include "parser.h"
+#include "lexer_G0.h"
+#include "parser_G0.h"
 
 MU_TEST(sets) {
   Set *s = empty_set();
@@ -107,18 +107,22 @@ MU_TEST(parser){
   gen_forest();
   Rule *S = vector_get(A, 0);
 
+  init_stack();
   init_scan("S -> 'a',;");
   scan();
   mu_check(parse(S->body));
 
+  init_stack();
   init_scan("S0 -> ['animal'] . 'bateau' ,;");
   scan();
   mu_check(parse(S->body));
 
+  init_stack();
   init_scan("S0 -> ['a'] . 'b' + S1, \n S1 -> S1,;");
   scan();
   mu_check(parse(S->body));
 
+  init_stack();
   init_scan("S");
   scan();
   mu_check(!parse(S->body));

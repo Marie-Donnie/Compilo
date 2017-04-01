@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdio.h>
-#include "lexer.h"
+#include "lexer_G0.h"
 #include "general_func.h"
 
 

@@ -1,5 +1,5 @@
-#include "lexer.h"
-#include "parser.h"
+#include "lexer_G0.h"
+#include "parser_G0.h"
 #include "general_func.h"
 
 /*------------------- PRINT FUNC -------------------------*/

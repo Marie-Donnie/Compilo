@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include "lexer_G0.h"
 
 char* END_FILE_STR = "end_file";
 
