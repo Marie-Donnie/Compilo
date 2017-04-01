@@ -1,0 +1,12 @@
+INST -> ident . ':=' . EXP,
+BOOLEANEXP -> TB . [ '||' . TB ],
+TB -> FB . [ '&&' . FB ],
+FB -> PB + '!' . PB,
+PB -> EXP . OPREL . EXP + BOOLEAN,
+OPREL -> '=' + '<' + '>' + '<=' + '>=' + '!=',
+BOOLEAN -> 'true' + 'false',
+IF -> 'if' . BOOLEANEXP . 'then' . INST . ELSE,
+ELSE -> (| 'else' . INST |),
+EXP -> BOOLEANEXP + NUMEXP,
+NUMEXP -> number . OPNUM . number,
+;
