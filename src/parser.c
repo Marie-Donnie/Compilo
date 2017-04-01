@@ -186,12 +186,65 @@ Rule* parsing_table_get(char *head, char *ter){
       return r;
     }
     else {
-      fprintf(stderr, "Column %s missing from row %s in parsing table.\n", ter, head);
-      exit(-1);
+      return NULL;
     }
   }
   else {
-    fprintf(stderr, "Row %s missing in parsing table.\n", head);
-    exit(-1);
+    return NULL;
   }
+}
+
+/*------------------- PARSE -------------------------*/
+
+void parse(char *input) {
+  Vector *stack = empty_vector();
+  Rule *start = vector_get(A, 0);
+  vector_push(stack, start->head);
+  int input_idx = 0;
+  Token t = lex(input, &input_idx);
+  Rule *r;
+
+  while (vector_length(stack) > 0) {
+    char *sym = vector_get(stack, vector_length(stack) - 1);
+
+    printf("parse: sym(%s) t(%d, %s)\n", sym, t.type, t.str);
+
+    if (is_same(sym, &t)) {
+      vector_pop(stack);
+      if (t.type == END_FILE) {
+        fail("Syntax error");
+      }
+      t = lex(input, &input_idx);
+    }
+    else if (is_terminal(sym)) {
+      fail("Syntax error");
+    }
+    else if ((r = parsing_table_get(sym, t.str)) == NULL) {
+      fail("Syntax error");
+    }
+    else {
+      print_ptr(r->body, 0);
+      vector_pop(stack);
+      Vector *l = leaves(r->body, empty_vector());
+      for (int i=vector_length(l)-1; i >= 0; i--){
+        vector_push(stack, vector_get(l, i));
+      }
+    }
+  }
+}
+
+bool is_terminal(char *sym) {
+  return get_rule_by_head_lax(sym) == NULL;
+}
+
+bool is_same(char *sym, Token *t){
+  bool ret = false;
+
+  if (t->type == IDENT && !strcmp(sym, t->str)){
+    ret = true;
+  }
+
+  printf("%s == (%d, %s): %d\n", sym, t->type, t->str, ret);
+
+  return false;
 }

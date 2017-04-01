@@ -25,7 +25,11 @@ void init_parsing_table(Vector *G);
 void parsing_table_put(char *head, char *ter, Rule *r);
 Rule* parsing_table_get(char *head, char *ter);
 
+/*------------------- PARSE -------------------------*/
 
+void parse(char *input);
+bool is_terminal(char *sym);
+bool is_same(char *sym, Token *t);
 
 
 #endif // PARSER_H

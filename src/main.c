@@ -55,6 +55,11 @@ void test_parser(){
   Rule *r = parsing_table_get("F", "[");
   printf("Head for M[F,'[']:%s.\n", r->head);
   print_ptr(r->body, 0);
+
+  r = parsing_table_get("E0", "ELTER");
+  print_ptr(r->body, 0);
+  printf("Testing parse:\n");
+  parse("S -> 'a',;");
 }
 
 /*------------------- MAIN -------------------------*/
