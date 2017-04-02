@@ -46,6 +46,75 @@ bool parse_GPL(Ptr *p){
   return false;
 }
 
-void GPL_action(int action){
+Vector *dic_var;
+int spx_start;
+Vector *stack;
+Vector *p_code;
 
+void GPL_action(int action){
+  Token *t;
+  int index;
+  printf("action number: %d\n", action);
+  switch(action){
+  case 1:
+    if (lookup_var(scan_token()->str) == -1){
+      vector_push(dic_var, scan_token()->str);
+      spx_start++;
+    }
+    break;
+  case 2:
+    t = scan_token();
+    index = lookup_var(t->str);
+    if (index == -1){
+      fprintf(stderr, "Var %s has not been declared.\n", t->str);
+      exit(3);
+    }
+    else {
+      p_code_push(LDA);
+      p_code_push(index);
+    }
+    break;
+  case 3:
+    p_code_push(AFF);
+    break;
+  case 4:
+    t = scan_token();
+    p_code_push(LDC);
+    p_code_push(atoi(t->str));
+    break;
+  }
+}
+
+void init_parse(){
+  dic_var = empty_vector();
+  spx_start = 0;
+  stack = empty_vector();
+  p_code = empty_vector();
+}
+
+int lookup_var(char *var){
+  int i;
+  for (i = 0 ; i < vector_length(dic_var) ; i++){
+    if (!strcmp(vector_get(dic_var, i), var)){
+      return i;
+    }
+  }
+  return -1;
+
+}
+
+void p_code_push(int code){
+  printf("%d code\n", code);
+  vector_push(p_code, gen_code(code));
+}
+
+int p_code_get(int index){
+  Code *c = vector_get(p_code, index);
+  return c->val;
+}
+
+Code *gen_code(int code) {
+  Code *c = check_malloc(sizeof(Code));
+  c->val = code;
+  return c;
 }

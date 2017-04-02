@@ -1,0 +1,25 @@
+PGM -> ['var'. 'ident#1' . ';']. BLOCK,
+BLOCK -> STMT.[STMT],
+STMT -> INST .';',
+INST -> ASSIGN + EXP + WHILE,
+ASSIGN -> 'ident#2' . ':=' . EXP#3,
+EXP -> NUMEXP + IF,
+
+IF -> 'if' . BOOLEANEXP . 'then' . BLOCK . ELSE,
+ELSE -> (| 'else' . BLOCK |),
+
+WHILE -> 'while' . BOOLEANEXP . 'do' . BLOCK,
+
+BOOLEANEXP -> TB . [ '||#0' . TB#0 ],
+TB -> FB . [ '&&#0' . FB#0 ],
+FB -> PB + '!#0' . PB#0,
+PB -> EXP . OPREL . EXP + BOOLEAN,
+OPREL -> '=#0' + '<#0' + '>#0' + '<=#0' + '>=#0' + '!=#0',
+BOOLEAN -> 'true' + 'false',
+
+NUMEXP -> NN . [ '+' . NN ],
+NN -> MN . [ '-' . MN ],
+MN -> ON . [ '*' . ON ],
+ON -> PN . [ '/' . PN ],
+PN -> 'number#4',
+;

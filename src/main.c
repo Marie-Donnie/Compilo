@@ -15,6 +15,31 @@ void print_vector(Vector *v){
   printf(">\n");
 }
 
+void print_p_code(){
+  int c0 = 0;
+  int code;
+  while (c0 < vector_length(p_code)){
+    code = p_code_get(c0);
+    switch (code){
+    case LDA:
+      printf("LDA %d\n", p_code_get(c0 + 1));
+      c0 = c0 + 2;
+      break;
+    case LDC:
+      printf("LDC %d\n", p_code_get(c0 + 1));
+      c0 = c0 + 2;
+      break;
+    case AFF:
+      printf("AFF\n");
+      c0 = c0 + 1;
+      break;
+    default:
+      printf("%d\n", code);
+      c0 = c0 + 1;
+    }
+  }
+}
+
 /*------------------- TESTS -------------------------*/
 
 void test_A(){
@@ -76,6 +101,7 @@ void test_lexer_GPL(char *buffer){
 
 void test_parser_GPL(){
   init_stack();
+  init_parse();
   scan_GPL();
   Rule *r = vector_get(A, 5);
   if (parse_GPL(r->body)) {
@@ -83,6 +109,7 @@ void test_parser_GPL(){
   } else {
     printf("Parse error\n");
   }
+  print_p_code();
 }
 
 

@@ -14,6 +14,10 @@ Token* lex_GPL(char *string, int *index){
       *index += 2;
       return gen_token(":=", ":=");
     }
+    else if (*c == ';'){
+      *index += 1;
+      return gen_token(";", ";");
+    }
     else if (*c  == '+'){
       *index += 1;
       return gen_token("+", "+");
@@ -21,6 +25,14 @@ Token* lex_GPL(char *string, int *index){
     else if (*c == '-'){
       *index += 1;
       return gen_token("-", "-");
+    }
+    else if (*c == '*'){
+      *index += 1;
+      return gen_token("*", "*");
+    }
+    else if (*c == '/'){
+      *index += 1;
+      return gen_token("/", "/");
     }
     else if (*c == '|' && *(c+1) == '|'){
       *index += 2;
@@ -69,7 +81,10 @@ Token* lex_GPL(char *string, int *index){
       strncpy(str, string + *index, count);
       str[count] = '\0';
       *index += count;
-      if (!strcmp(str, "true")){
+      if (!strcmp(str, "var")){
+	return gen_token("var", "var");
+      }
+      else if (!strcmp(str, "true")){
 	return gen_token("true", "true");
       }
       else if (!strcmp(str, "false")){
@@ -83,6 +98,12 @@ Token* lex_GPL(char *string, int *index){
       }
       else if (!strcmp(str, "else")){
 	return gen_token("else", "else");
+      }
+      else if (!strcmp(str, "while")){
+	return gen_token("while", "while");
+      }
+      else if (!strcmp(str, "do")){
+	return gen_token("do", "do");
       }
       return gen_token("ident", str);
     }
