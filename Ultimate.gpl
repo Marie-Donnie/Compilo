@@ -1,4 +1,4 @@
-PGM -> ['var'. 'ident#1' . ';']. BLOCK,
+PGM -> ['var'. 'ident#1' . ';']. BLOCK#27,
 BLOCK -> STMT.[STMT],
 STMT -> INST .';',
 INST -> ASSIGN + IF + WHILE,
@@ -22,6 +22,6 @@ MN -> ON . [ '*#6' . ON#9 ],
 ON -> PN . [ '/#5' . PN#9 ],
 PN -> ATOM,
 
-ATOM -> 'ident#2' + 'number#4' + BOOLEAN,
+ATOM -> 'ident#28' + 'number#4' + BOOLEAN,
 BOOLEAN -> 'true#25' + 'false#26',
 ;

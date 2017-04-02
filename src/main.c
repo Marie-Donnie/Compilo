@@ -80,14 +80,23 @@ void test_parser_GPL(){
   init_parse();
   scan_GPL();
   Rule *r = vector_get(A, 5);
-  if (parse_GPL(r->body)) {
+  if (parse_GPL(r->body) && (!strcmp(scan_token()->type, END_FILE_STR))) {
     printf("Parse ok\n");
   } else {
     printf("Parse error\n");
   }
-  print_p_code();
 }
 
+
+void test_interpreter(){
+
+  print_p_code();
+
+  interpret();
+
+  print_pilex();
+
+}
 
 /*------------------- MAIN -------------------------*/
 
@@ -138,9 +147,16 @@ int main(int argc, char **argv){
 
   printf("Program:\n%s\n", pgm);
 
+  printf("/*------------------ LEXER_GPL ------------------*/\n");
   test_lexer_GPL(pgm);
   init_scan(pgm);
+
+  printf("/*------------------ PARSER_GPL ------------------*/\n");
   test_parser_GPL();
+
+
+  printf("/*------------------ INTERPRETER ------------------*/\n");
+  test_interpreter();
 
   return EXIT_SUCCESS;
 }

@@ -175,6 +175,21 @@ void GPL_action(int action){
   case 26:
     p_code_push(0);
     break;
+  case 27:
+    p_code_push(STOP);
+    break;
+  case 28:
+    t = scan_token();
+    index = lookup_var(t->str);
+    if (index == -1){
+      fprintf(stderr, "Var %s has not been declared.\n", t->str);
+      exit(3);
+    }
+    else {
+      p_code_push(LDV);
+      p_code_push(index);
+    }
+    break;
   }
 }
 
@@ -197,7 +212,6 @@ int lookup_var(char *var){
 }
 
 void p_code_push(int code){
-  printf("p_code push: %d\n", code);
   vector_push(p_code, gen_code(code));
 }
 
@@ -207,9 +221,7 @@ int p_code_get(int index){
 }
 
 void p_code_set(int index, int code){
-  printf("p_code set: %d, %d\n", index, code);
   p_code->elts[index] = gen_code(code);
-  printf("p_code after set: %d\n", p_code_get(index));
 }
 
 Code *gen_code(int code) {

@@ -7,10 +7,12 @@
 
 
 extern Vector *p_code;
+extern int spx_start;
 
 typedef enum {
   LDA,
   LDC,
+  LDV,
   AFF,
   ADD,
   SUB,
@@ -26,7 +28,8 @@ typedef enum {
   GEQ,
   NEQ,
   JIF,
-  JMP
+  JMP,
+  STOP
 } Opcode;
 
 typedef struct {

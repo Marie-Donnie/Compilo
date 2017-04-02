@@ -1,9 +1,139 @@
 #include "interpreter.h"
 
+Vector *pilex;
+
+
+void interpret(){
+  pilex = empty_vector();
+  // reserved variables initialized to zero
+  while (spx_start > 0){
+    pilex_push(0);
+    spx_start--;
+  }
+  int c0 = 0;
+  int code = p_code_get(c0);
+  int a, b;
+
+  while (code != STOP){
+    code = p_code_get(c0);
+    switch (code){
+    case LDA:
+    case LDC:
+      pilex_push(p_code_get(c0 + 1));
+      c0 = c0 + 2;
+      break;
+    case LDV:
+      pilex_push(pilex_get(p_code_get(c0 + 1)));
+      c0 = c0 + 2;
+      break;
+    case ADD:
+      b = pilex_pop();
+      a = pilex_pop();
+      pilex_push(a + b);
+      c0 = c0 + 1;
+      break;
+    case SUB:
+      b = pilex_pop();
+      a = pilex_pop();
+      pilex_push(a - b);
+      c0 = c0 + 1;
+      break;
+    case MULT:
+      b = pilex_pop();
+      a = pilex_pop();
+      pilex_push(a * b);
+      c0 = c0 + 1;
+      break;
+    case DIV:
+      b = pilex_pop();
+      a = pilex_pop();
+      pilex_push(a / b);
+      c0 = c0 + 1;
+      break;
+    case OR:
+      b = pilex_pop();
+      a = pilex_pop();
+      pilex_push(a || b);
+      c0 = c0 + 1;
+      break;
+    case AND:
+      b = pilex_pop();
+      a = pilex_pop();
+      pilex_push(a && b);
+      c0 = c0 + 1;
+      break;
+    case NOT:
+      pilex_push(!pilex_pop());
+      c0 = c0 + 1;
+      break;
+    case EQ:
+      b = pilex_pop();
+      a = pilex_pop();
+      pilex_push(a == b);
+      c0 = c0 + 1;
+      break;
+    case LT:
+      b = pilex_pop();
+      a = pilex_pop();
+      pilex_push(a < b);
+      c0 = c0 + 1;
+      break;
+    case GT:
+      b = pilex_pop();
+      a = pilex_pop();
+      pilex_push(a > b);
+      c0 = c0 + 1;
+      break;
+    case LEQ:
+      b = pilex_pop();
+      a = pilex_pop();
+      pilex_push(a <= b);
+      c0 = c0 + 1;
+      break;
+    case GEQ:
+      b = pilex_pop();
+      a = pilex_pop();
+      pilex_push(a >= b);
+      c0 = c0 + 1;
+      break;
+    case NEQ:
+      b = pilex_pop();
+      a = pilex_pop();
+      pilex_push(a != b);
+      c0 = c0 + 1;
+      break;
+    case JMP:
+      c0 = p_code_get(c0 + 1);
+      break;
+    case JIF:
+      if (pilex_pop()){
+	c0 = c0 + 2;
+      }
+      else{
+	c0 = p_code_get(c0 + 1);
+      }
+      break;
+    case AFF:
+      b = pilex_pop();
+      a = pilex_pop();
+      pilex_set(a, b);
+      c0 = c0 + 1;
+      break;
+    case STOP:
+      break;
+    default:
+      printf("%d\n", code);
+      c0 = c0 + 1;
+    }
+  }
+}
+
+
+
 void print_p_code(){
   int c0 = 0;
-  int code;
-  while (c0 < vector_length(p_code)){
+  int code = p_code_get(c0);
+  while (code != STOP){
     code = p_code_get(c0);
     printf("%d: ", c0);
     switch (code){
@@ -13,6 +143,10 @@ void print_p_code(){
       break;
     case LDC:
       printf("LDC %d\n", p_code_get(c0 + 1));
+      c0 = c0 + 2;
+      break;
+    case LDV:
+      printf("LDV %d\n", p_code_get(c0 + 1));
       c0 = c0 + 2;
       break;
     case ADD:
@@ -79,9 +213,41 @@ void print_p_code(){
       printf("AFF\n");
       c0 = c0 + 1;
       break;
+    case STOP:
+      printf("STOP\n");
+      c0 = c0 + 1;
+      break;
     default:
       printf("%d\n", code);
       c0 = c0 + 1;
     }
   }
+}
+
+
+void pilex_push(int code){
+  vector_push(pilex, gen_code(code));
+
+}
+
+void pilex_set(int index, int code){
+    pilex->elts[index] = gen_code(code);
+}
+
+int pilex_pop(){
+  Code *c = vector_pop(pilex);
+  return c->val;
+}
+
+int pilex_get(int index){
+  Code *c = vector_get(pilex, index);
+  return c->val;
+}
+
+void print_pilex(){
+  printf("<");
+  for (int i = 0 ; i < vector_length(pilex) ; i++){
+    printf("%d, ", pilex_get(i));
+  }
+  printf(">\n");
 }
