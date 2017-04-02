@@ -1,8 +1,16 @@
 var a;
 var b;
+var c;
 a := 1;
 b := 3;
+c := a;
 while (b > 0) do
 a := a + 1;
 b := b - 1;
+c := c + 1;
 ;
+write a;
+write b;
+write c;
+a := read;
+write a;

@@ -29,6 +29,8 @@ typedef enum {
   NEQ,
   JIF,
   JMP,
+  READ,
+  WRITE,
   STOP
 } Opcode;
 

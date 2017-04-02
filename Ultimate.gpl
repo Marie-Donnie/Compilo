@@ -1,7 +1,7 @@
 PGM -> ['var'. 'ident#1' . ';']. BLOCK#27,
 BLOCK -> STMT.[STMT],
 STMT -> INST .';',
-INST -> ASSIGN + IF + WHILE,
+INST -> ASSIGN + IF + WHILE + WRITE,
 ASSIGN -> 'ident#2' . ':=' . EXP#3,
 EXP -> NUMEXP + BOOLEANEXP,
 
@@ -22,6 +22,10 @@ MN -> ON . [ '*#6' . ON#9 ],
 ON -> PN . [ '/#5' . PN#9 ],
 PN -> ATOM,
 
-ATOM -> 'ident#28' + 'number#4' + BOOLEAN,
+ATOM -> 'ident#28' + 'number#4' + BOOLEAN + READ,
 BOOLEAN -> 'true#25' + 'false#26',
+
+
+READ -> 'read#29',
+WRITE -> 'write' . EXP#30,
 ;

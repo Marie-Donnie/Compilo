@@ -13,6 +13,7 @@ void interpret(){
   int c0 = 0;
   int code = p_code_get(c0);
   int a, b;
+  char buf[MAX_BUF_SIZE];
 
   while (code != STOP){
     code = p_code_get(c0);
@@ -119,10 +120,19 @@ void interpret(){
       pilex_set(a, b);
       c0 = c0 + 1;
       break;
+    case READ:
+      read(fileno(stdin), buf, MAX_BUF_SIZE);
+      pilex_push(atoi(buf));
+      c0 = c0 + 1;
+      break;
+    case WRITE:
+      printf("%d\n", pilex_pop());
+      c0 = c0 + 1;
+      break;
     case STOP:
       break;
     default:
-      printf("%d\n", code);
+      printf("Unknown opcode: %d\n", code);
       c0 = c0 + 1;
     }
   }
@@ -213,12 +223,20 @@ void print_p_code(){
       printf("AFF\n");
       c0 = c0 + 1;
       break;
+    case READ:
+      printf("READ\n");
+      c0 = c0 + 1;
+      break;
+    case WRITE:
+      printf("WRITE\n");
+      c0 = c0 + 1;
+      break;
     case STOP:
       printf("STOP\n");
       c0 = c0 + 1;
       break;
     default:
-      printf("%d\n", code);
+      printf("Unknown opcode: %d\n", code);
       c0 = c0 + 1;
     }
   }

@@ -190,6 +190,12 @@ void GPL_action(int action){
       p_code_push(index);
     }
     break;
+  case 29:
+    p_code_push(READ);
+    break;
+  case 30:
+    p_code_push(WRITE);
+    break;
   }
 }
 

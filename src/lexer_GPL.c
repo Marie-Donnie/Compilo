@@ -113,6 +113,12 @@ Token* lex_GPL(char *string, int *index){
       else if (!strcmp(str, "do")){
 	return gen_token("do", "do");
       }
+      else if (!strcmp(str, "read")){
+	return gen_token("read", "read");
+      }
+      else if (!strcmp(str, "write")){
+	return gen_token("write", "write");
+      }
       return gen_token("ident", str);
     }
     else if (is_digit(*c)){

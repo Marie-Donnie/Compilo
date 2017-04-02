@@ -2,6 +2,9 @@
 #define INTERPRETER_H
 
 #include "parser_GPL.h"
+#include <unistd.h>
+
+#define MAX_BUF_SIZE 256
 
 void interpret();
 
