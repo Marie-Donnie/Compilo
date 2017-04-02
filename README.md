@@ -1,5 +1,39 @@
 # Compilo
 
+## Install
 
-Hashmap from [Pete Warden on Github](https://github.com/petewarden/c_hashmap)
-Minuit from [David Siñuela Pastor](https://github.com/siu/minunit)
+```
+git clone https://github.com/Marie-Donnie/Compilo.git
+make
+```
+
+### Make Doxygen
+
+Requires Doxygen ([Download Doxygen](http://www.stack.nl/~dimitri/doxygen/download.html))
+
+```
+doxygen doxyconfig
+```
+Use by launching html/index.html in your browser.
+
+## Use
+
+### Testing
+
+```
+./testo
+```
+
+### Compiling
+
+General syntax:
+
+```
+./compilo <GPL> <GPL-program>
+```
+
+As an example, using Ultimate.gpl on somme.ult:
+
+```
+./compilo Ultimate gpl somme.ult
+```
