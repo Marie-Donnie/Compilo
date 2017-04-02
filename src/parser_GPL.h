@@ -26,8 +26,7 @@ typedef enum {
   GEQ,
   NEQ,
   JIF,
-  JUMP
-
+  JMP
 } Opcode;
 
 typedef struct {
@@ -44,7 +43,7 @@ void init_parse();
 int lookup_var(char *var);
 
 void p_code_push(int code);
-
+void p_code_set(int index, int code);
 int p_code_get(int index);
 Code *gen_code(int code);
 

@@ -18,6 +18,14 @@ Token* lex_GPL(char *string, int *index){
       *index += 1;
       return gen_token(";", ";");
     }
+    else if (*c == '('){
+      *index += 1;
+      return gen_token("(", "(");
+    }
+    else if (*c == ')'){
+      *index += 1;
+      return gen_token(")", ")");
+    }
     else if (*c  == '+'){
       *index += 1;
       return gen_token("+", "+");

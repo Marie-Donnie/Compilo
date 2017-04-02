@@ -20,6 +20,7 @@ void print_p_code(){
   int code;
   while (c0 < vector_length(p_code)){
     code = p_code_get(c0);
+    printf("%d: ", c0);
     switch (code){
     case LDA:
       printf("LDA %d\n", p_code_get(c0 + 1));
@@ -80,6 +81,14 @@ void print_p_code(){
     case NEQ:
       printf("NEQ\n");
       c0 = c0 + 1;
+      break;
+    case JMP:
+      printf("JMP %d\n", p_code_get(c0 + 1));
+      c0 = c0 + 2;
+      break;
+    case JIF:
+      printf("JIF %d\n", p_code_get(c0 + 1));
+      c0 = c0 + 2;
       break;
     case AFF:
       printf("AFF\n");

@@ -137,7 +137,44 @@ void GPL_action(int action){
     t = scan_token();
     stack_push(NEQ);
     break;
-
+  case 19:
+    p_code_push(JIF);
+    p_code_push(0);
+    stack_push(vector_length(p_code) - 1);
+    break;
+  case 20:
+    p_code_push(JMP);
+    p_code_push(0);
+    index = stack_pop();
+    p_code_set(index, vector_length(p_code));
+    stack_push(vector_length(p_code) - 1);
+    break;
+  case 21:
+    index = stack_pop();
+    p_code_set(index, vector_length(p_code));
+    break;
+  case 22:
+    stack_push(vector_length(p_code));
+    break;
+  case 23:
+    p_code_push(JIF);
+    p_code_push(0);
+    stack_push(vector_length(p_code) - 1);
+    break;
+  case 24:
+    // JIF argument address from #23
+    index = stack_pop();
+    p_code_set(index, vector_length(p_code) + 2);
+    p_code_push(JMP);
+    // Adress before booleanexp from #22
+    p_code_push(stack_pop());
+    break;
+  case 25:
+    p_code_push(1);
+    break;
+  case 26:
+    p_code_push(0);
+    break;
   }
 }
 
@@ -160,13 +197,19 @@ int lookup_var(char *var){
 }
 
 void p_code_push(int code){
-  printf("%d code\n", code);
+  printf("p_code push: %d\n", code);
   vector_push(p_code, gen_code(code));
 }
 
 int p_code_get(int index){
   Code *c = vector_get(p_code, index);
   return c->val;
+}
+
+void p_code_set(int index, int code){
+  printf("p_code set: %d, %d\n", index, code);
+  p_code->elts[index] = gen_code(code);
+  printf("p_code after set: %d\n", p_code_get(index));
 }
 
 Code *gen_code(int code) {
