@@ -12,6 +12,19 @@ typedef enum {
   LDA,
   LDC,
   AFF,
+  ADD,
+  SUB,
+  MULT,
+  DIV,
+  OR,
+  AND,
+  NOT,
+  EQ,
+  LT,
+  GT,
+  LEQ,
+  GEQ,
+  NEQ,
   JIF,
   JUMP
 
@@ -34,5 +47,9 @@ void p_code_push(int code);
 
 int p_code_get(int index);
 Code *gen_code(int code);
+
+void stack_push(int code);
+int stack_get(int index);
+int stack_pop();
 
 #endif //PARSER_GPL_H

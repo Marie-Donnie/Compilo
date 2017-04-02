@@ -1,25 +1,28 @@
 PGM -> ['var'. 'ident#1' . ';']. BLOCK,
 BLOCK -> STMT.[STMT],
 STMT -> INST .';',
-INST -> ASSIGN + EXP + WHILE,
+INST -> ASSIGN + IF + WHILE,
 ASSIGN -> 'ident#2' . ':=' . EXP#3,
-EXP -> NUMEXP + IF,
+EXP -> NUMEXP + BOOLEANEXP,
 
 IF -> 'if' . BOOLEANEXP . 'then' . BLOCK . ELSE,
 ELSE -> (| 'else' . BLOCK |),
 
 WHILE -> 'while' . BOOLEANEXP . 'do' . BLOCK,
 
-BOOLEANEXP -> TB . [ '||#0' . TB#0 ],
-TB -> FB . [ '&&#0' . FB#0 ],
-FB -> PB + '!#0' . PB#0,
-PB -> EXP . OPREL . EXP + BOOLEAN,
-OPREL -> '=#0' + '<#0' + '>#0' + '<=#0' + '>=#0' + '!=#0',
+BOOLEANEXP -> TB . [ '||#10' . TB#9 ],
+TB -> FB . [ '&&#11' . FB#9 ],
+FB -> PB + '!#12' . PB#9,
+PB -> EXP . OPREL . EXP#9 + ATOM,
+OPREL -> '=#13' + '<#14' + '>#15' + '<=#16' + '>=#17' + '!=#18',
+
+NUMEXP -> NN . [ '+#8' . NN#9 ],
+NN -> MN . [ '-#7' . MN#9 ],
+MN -> ON . [ '*#6' . ON#9 ],
+ON -> PN . [ '/#5' . PN#9 ],
+PN -> ATOM,
+
+ATOM -> 'ident#2' + 'number#4' + BOOLEAN,
 BOOLEAN -> 'true' + 'false',
 
-NUMEXP -> NN . [ '+' . NN ],
-NN -> MN . [ '-' . MN ],
-MN -> ON . [ '*' . ON ],
-ON -> PN . [ '/' . PN ],
-PN -> 'number#4',
 ;

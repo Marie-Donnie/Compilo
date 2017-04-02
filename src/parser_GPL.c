@@ -82,6 +82,62 @@ void GPL_action(int action){
     p_code_push(LDC);
     p_code_push(atoi(t->str));
     break;
+  case 5:
+    t = scan_token();
+    stack_push(DIV);
+    break;
+  case 6:
+    t = scan_token();
+    stack_push(MULT);
+    break;
+  case 7:
+    t = scan_token();
+    stack_push(SUB);
+    break;
+  case 8:
+    t = scan_token();
+    stack_push(ADD);
+    break;
+  case 9:
+    p_code_push(stack_pop());
+    break;
+  case 10:
+    t = scan_token();
+    stack_push(OR);
+    break;
+  case 11:
+    t = scan_token();
+    stack_push(AND);
+    break;
+  case 12:
+    t = scan_token();
+    stack_push(NOT);
+    break;
+  case 13:
+    t = scan_token();
+    stack_push(EQ);
+    break;
+  case 14:
+    t = scan_token();
+    stack_push(LT);
+    break;
+  case 15:
+    t = scan_token();
+    stack_push(GT);
+    break;
+  case 16:
+    t = scan_token();
+    stack_push(LEQ);
+    break;
+  case 17:
+    t = scan_token();
+    stack_push(GEQ);
+    break;
+  case 18:
+    t = scan_token();
+    stack_push(NEQ);
+    break;
+
   }
 }
 
@@ -117,4 +173,19 @@ Code *gen_code(int code) {
   Code *c = check_malloc(sizeof(Code));
   c->val = code;
   return c;
+}
+
+void stack_push(int code){
+  printf("%d code\n", code);
+  vector_push(stack, gen_code(code));
+}
+
+int stack_get(int index){
+  Code *c = vector_get(stack, index);
+  return c->val;
+}
+
+int stack_pop(){
+  Code *c = vector_pop(stack);
+  return c->val;
 }
