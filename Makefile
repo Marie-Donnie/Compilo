@@ -39,7 +39,7 @@ all: main test
 main: $(BINDIR)/$(EXEC)
 test: $(BINDIR)/$(TEST_EXEC)
 
-debug: CXXFLAGS += -ggdb
+debug: CXXFLAGS += -ggdb -DDEBUG
 debug: clean all
 
 $(BINDIR)/$(EXEC): $(EXEC_OBJECTS)

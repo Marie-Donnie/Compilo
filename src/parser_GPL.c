@@ -18,7 +18,9 @@ bool parse_GPL(Ptr *p){
   else if (p->op_type == ATOM){
     if (p->op.atom->a_type == TERMINAL){
 
+#ifdef DEBUG
       printf("atom: %s token: %s\n", p->op.atom->code, scan_token()->type);
+#endif
 
       if (!strcmp(p->op.atom->code, scan_token()->type)){
 	if (p->op.atom->action != 0){
@@ -54,7 +56,11 @@ Vector *p_code;
 void GPL_action(int action){
   Token *t;
   int index;
+
+#ifdef DEBUG
   printf("action number: %d\n", action);
+#endif
+
   switch(action){
   case 1:
     if (lookup_var(scan_token()->str) == -1){
@@ -237,7 +243,9 @@ Code *gen_code(int code) {
 }
 
 void stack_push(int code){
+#ifdef DEBUG
   printf("%d code\n", code);
+#endif
   vector_push(stack, gen_code(code));
 }
 
