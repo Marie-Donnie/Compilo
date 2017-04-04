@@ -84,10 +84,7 @@ Token* lex_GPL(char *string, int *index){
 	count++;
 	c = string + *index + count;
       } while (is_letter(*c) || is_digit(*c) || (*c=='#'));
-      //TODO strdup
-      str = malloc(sizeof(char)*(count+1));
-      strncpy(str, string + *index, count);
-      str[count] = '\0';
+      str = strndup(string + *index, count);
       *index += count;
       if (!strcmp(str, "var")){
 	return gen_token("var", "var");
@@ -127,10 +124,7 @@ Token* lex_GPL(char *string, int *index){
 	count++;
 	c = string + *index + count;
       } while (is_digit(*c) || (*c=='#'));
-      //TODO strdup
-      str = malloc(sizeof(char)*(count+1));
-      strncpy(str, string + *index, count);
-      str[count] = '\0';
+      str = strndup(string + *index, count);
       *index += count;
       return gen_token("number", str);
     }

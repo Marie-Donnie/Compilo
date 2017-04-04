@@ -75,9 +75,7 @@ Token* lex(char *string, int *index){
       while (*(string + *index + count) != '\''){
 	count++;
       }
-      str = malloc(sizeof(char)*(count+1)); // +1 for \0
-      strncpy(str, string + *index, count);
-      str[count] = '\0';
+      str = strndup(string + *index, count);
       *index += count + 1; // +1 for '
       return gen_token("ELTER", str);
     }
@@ -88,9 +86,7 @@ Token* lex(char *string, int *index){
 	c = string + *index + count;
       }
       while (is_letter(*c) || is_digit(*c) || (*c=='#'));
-      str = malloc(sizeof(char)*(count+1));
-      strncpy(str, string + *index, count);
-      str[count] = '\0';
+      str = strndup(string + *index, count);
       *index += count;
       return gen_token("IDNTER", str);
     }
