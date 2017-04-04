@@ -126,6 +126,10 @@ void interpret(){
       c0 = c0 + 1;
       break;
     case WRITE:
+      printf("%d", pilex_pop());
+      c0 = c0 + 1;
+      break;
+    case WRITELN:
       printf("%d\n", pilex_pop());
       c0 = c0 + 1;
       break;
@@ -229,6 +233,10 @@ void print_p_code(){
       break;
     case WRITE:
       printf("WRITE\n");
+      c0 = c0 + 1;
+      break;
+    case WRITELN:
+      printf("WRITELN\n");
       c0 = c0 + 1;
       break;
     case STOP:

@@ -98,7 +98,16 @@ Ptr* gen_E();
 Ptr* gen_T();
 Ptr* gen_F();
 
+/** \fn void gen_forest()
+ *  \brief Generates the tree for G0 and puts it in the Vector *A
+ *  Generates the rules for S, N, E, T, F
+ */
 void gen_forest();
+/** \fn Rule* gen_rule(char *head, Ptr *body)
+ *  \brief Generates the returned rule using a char* and the Ptr it links to
+ *  \param *head
+ *  \param *body
+ */
 Rule* gen_rule(char *head, Ptr *body);
 Rule *get_rule(size_t index);
 Rule* get_rule_by_head(char *head);
@@ -109,7 +118,6 @@ size_t get_A_length();
 /*------------------- DESTRUCTION -------------------------*/
 
 void free_ptr(Ptr *p);
-
 void free_conc(Conc *c);
 void free_star(Star *s);
 void free_atom(Atom *a);

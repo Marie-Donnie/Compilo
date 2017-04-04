@@ -31,6 +31,7 @@ typedef enum {
   JMP,
   READ,
   WRITE,
+  WRITELN,
   STOP
 } Opcode;
 

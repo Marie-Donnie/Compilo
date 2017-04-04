@@ -194,7 +194,7 @@ void GPL_action(int action){
     p_code_push(READ);
     break;
   case 30:
-    p_code_push(WRITE);
+    p_code_push(WRITELN);
     break;
   }
 }
