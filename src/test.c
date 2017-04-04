@@ -140,8 +140,8 @@ MU_TEST(lexer) {
     t = lex(input, &index);
     mu_check(i < out_len);
     mu_check(!strcmp(t->type, output[i]->type));
-     mu_check(!strcmp(t->str, output[i]->str));
-     i++;
+    mu_check(!strcmp(t->str, output[i]->str));
+    i++;
   } while (t->type != END_FILE_STR);
 }
 
@@ -168,7 +168,6 @@ MU_TEST(parser){
   init_scan("S");
   scan();
   mu_check(!parse(S->body));
-
 }
 
 
