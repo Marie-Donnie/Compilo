@@ -4,6 +4,7 @@
 #include "vector.h"
 #include "lexer_G0.h"
 #include "parser_G0.h"
+#include "lexer_GPL.h"
 
 
 MU_TEST(vectors) {
@@ -192,7 +193,45 @@ MU_TEST(parser_g0){
   mu_check(!parse(S->body));
 }
 
-MU_TEST(parser_gpl){
+MU_TEST(lexer_gpl) {
+  char *input = "var a;\n b := 1092;\n if (while && else) - a < > = C";
+  Token *output[] = {
+    gen_token("var", "var"),
+    gen_token("ident", "a"),
+    gen_token(";", ";"),
+    gen_token("ident", "b"),
+    gen_token(":=", ":="),
+    gen_token("number", "1092"),
+    gen_token(";", ";"),
+    gen_token("if", "if"),
+    gen_token("(", "("),
+    gen_token("while", "while"),
+    gen_token("&&", "&&"),
+    gen_token("else", "else"),
+    gen_token(")", ")"),
+    gen_token("-", "-"),
+    gen_token("ident", "a"),
+    gen_token("<", "<"),
+    gen_token(">", ">"),
+    gen_token("=", "="),
+    gen_token("ident", "C"),
+    gen_token(END_FILE_STR, END_FILE_STR),
+  };
+  size_t i = 0;
+  size_t out_len = sizeof(output) / sizeof(Token*);
+  int index = 0;
+  Token *t;
+
+  do {
+    t = lex_GPL(input, &index);
+    mu_check(i < out_len);
+    mu_check(!strcmp(t->type, output[i]->type));
+    mu_check(!strcmp(t->str, output[i]->str));
+    i++;
+  } while (t->type != END_FILE_STR);
+}
+
+MU_TEST(parser_gpl) {
 }
 
 
@@ -203,6 +242,7 @@ int main() {
   MU_RUN_TEST(grammar_test);
   MU_RUN_TEST(lexer_g0);
   MU_RUN_TEST(parser_g0);
+  MU_RUN_TEST(lexer_gpl);
   MU_RUN_TEST(parser_gpl);
   MU_REPORT();
   return 0;
