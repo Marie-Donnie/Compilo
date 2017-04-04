@@ -30,9 +30,7 @@ Ptr* gen_star(Ptr *p1){
 
 Ptr* gen_atom(char *code, int action, AtomType at){
   Atom *a = (Atom*) malloc(sizeof(Atom));
-  a->code = (char*) malloc(sizeof(char)*TER_SIZE);
-  strncpy(a->code, code, TER_SIZE);
-  a->code[9] = 0;
+  a->code = strndup(code, TER_SIZE);
   a->action = action;
   a->a_type = at;
   Ptr *p = (Ptr*) malloc(sizeof(Ptr));
