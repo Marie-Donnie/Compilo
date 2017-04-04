@@ -58,3 +58,24 @@ Vector* vector_concat(Vector *v, Vector *u){
   }
   return v;
 }
+
+bool vector_equal(Vector *a, Vector *b, eq_func fn){
+  if (vector_length(a) != vector_length(b)){
+    return false;
+  }
+
+  for (int i=0; i < vector_length(a); i++){
+    if (!fn(vector_get(a, i), vector_get(b, i))){
+      return false;
+    }
+  }
+  return true;
+}
+
+bool identity(void *a, void *b) {
+  return a == b;
+}
+
+bool str_eq(void *a, void *b) {
+  return strcmp((char *)a, (char *)b) == 0;
+}

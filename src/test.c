@@ -1,4 +1,5 @@
 #include <stdbool.h>
+#include <string.h>
 #include "minunit.h"
 #include "vector.h"
 #include "lexer_G0.h"
@@ -19,13 +20,30 @@ MU_TEST(vectors) {
   mu_check(vector_is_member(v, A));
   mu_check(vector_is_member(v, "B") == false);
 
+  // Equality
+  v = empty_vector();
+  Vector *u = empty_vector();
+  mu_check(vector_equal(v, u, &identity));
+
+  vector_push(v, A);
+  vector_push(u, A);
+  mu_check(vector_equal(v, u, &identity));
+
+  char *A2 = strdup(A);
+  vector_push(v, A);
+  vector_push(u, A2);
+  mu_check(!vector_equal(v, u, &identity));
+  mu_check(vector_equal(v, u, &str_eq));
+
   // concat
-  Vector *v2 = empty_vector();
+  v = empty_vector();
+  u = empty_vector();
+  vector_push(v, "A");
   char *B = "B";
   char *C = "C";
-  vector_push(v2, B);
-  vector_push(v2, C);
-  vector_concat(v, v2);
+  vector_push(u, B);
+  vector_push(u, C);
+  vector_concat(v, u);
   mu_check(vector_length(v) == 3);
   mu_check(vector_get(v, 0) == A);
   mu_check(vector_get(v, 1) == B);
