@@ -204,18 +204,14 @@ bool rule_equal(Rule *a, Rule *b){
     && ptr_equal(a->body, b->body);
 }
 
-bool grammar_equal(Vector *a, Vector *b){
-  if (vector_length(a) != vector_length(b)) {
-    return false;
-  }
-
-  for (int i = 0 ; i < vector_length(a) ; i++){
-    if (!rule_equal(vector_get(a, i), vector_get(b, i))){
-      return false;
-    }
-  }
-  return true;
+bool rule_eq(void *a, void *b) {
+  return rule_equal((Rule*)a, (Rule*)b);
 }
+
+bool grammar_equal(Vector *a, Vector *b){
+  return vector_equal(a, b, &rule_eq);
+}
+
 
 /*------------------- DESTRUCTION -------------------------*/
 
