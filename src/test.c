@@ -100,7 +100,7 @@ MU_TEST(grammar_test) {
   mu_check(grammar_equal(G, G2));
 }
 
-MU_TEST(lexer) {
+MU_TEST(lexer_g0) {
   Token *t1 = gen_token("IDNTER", "A");
   mu_check(!strcmp(t1->type, "IDNTER"));
   mu_check(!strcmp(t1->str, "A"));
@@ -145,29 +145,54 @@ MU_TEST(lexer) {
   } while (t->type != END_FILE_STR);
 }
 
-MU_TEST(parser){
+MU_TEST(parser_g0){
   gen_forest();
   Rule *S = vector_get(A, 0);
 
   init_stack();
   init_scan("S -> 'a',;");
   scan();
+  Rule *r1 = gen_rule("S", gen_atom("a", 0, TERMINAL));
   mu_check(parse(S->body));
+  mu_check(rule_equal(vector_get(A, 5), r1));
 
+  gen_forest();
+  init_stack();
+  init_scan("S -> 'a#1',;");
+  scan();
+  r1 = gen_rule("S", gen_atom("a", 1, TERMINAL));
+  mu_check(parse(S->body));
+  mu_check(rule_equal(vector_get(A, 5), r1));
+
+  gen_forest();
   init_stack();
   init_scan("S0 -> ['animal'] . 'bateau' ,;");
   scan();
+  r1 = gen_rule("S0", gen_conc(gen_star(gen_atom("animal", 0, TERMINAL)),
+                               gen_atom("bateau", 0, TERMINAL)));
   mu_check(parse(S->body));
+  mu_check(rule_equal(vector_get(A, 5), r1));
 
+  gen_forest();
   init_stack();
   init_scan("S0 -> ['a'] . 'b' + S1, \n S1 -> S1,;");
   scan();
   mu_check(parse(S->body));
+  r1 = gen_rule("S0", gen_union(gen_conc(gen_star(gen_atom("a", 0, TERMINAL)),
+                                         gen_atom("b", 0, TERMINAL)),
+                                gen_atom("S1", 0, NON_TERMINAL)));
+  Rule *r2 = gen_rule("S1", gen_atom("S1", 0, NON_TERMINAL));
+  mu_check(rule_equal(vector_get(A, 5), r1));
+  mu_check(rule_equal(vector_get(A, 6), r2));
 
+  gen_forest();
   init_stack();
   init_scan("S");
   scan();
   mu_check(!parse(S->body));
+}
+
+MU_TEST(parser_gpl){
 }
 
 
@@ -176,8 +201,9 @@ int main() {
   MU_RUN_TEST(ptr_test);
   MU_RUN_TEST(rule_test);
   MU_RUN_TEST(grammar_test);
-  MU_RUN_TEST(lexer);
-  MU_RUN_TEST(parser);
+  MU_RUN_TEST(lexer_g0);
+  MU_RUN_TEST(parser_g0);
+  MU_RUN_TEST(parser_gpl);
   MU_REPORT();
   return 0;
 }
