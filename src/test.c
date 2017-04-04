@@ -5,6 +5,8 @@
 #include "lexer_G0.h"
 #include "parser_G0.h"
 #include "lexer_GPL.h"
+#include "parser_GPL.h"
+#include "interpreter.h"
 
 
 MU_TEST(vectors) {
@@ -232,8 +234,88 @@ MU_TEST(lexer_gpl) {
 }
 
 MU_TEST(parser_gpl) {
+  gen_forest();
+  vector_push(A, gen_rule("PGM", gen_star(gen_conc(gen_atom("var", 0, TERMINAL),
+                                                   gen_conc(gen_atom("ident", 1, TERMINAL),
+                                                            gen_atom(";", 0, TERMINAL))))));
+  init_scan("var a; var b;");
+  init_stack();
+  init_parse();
+  scan_GPL();
+  Rule *S = vector_get(A, 5);
+  mu_check(parse_GPL(S->body));
+  mu_check(spx_start == 2);
 }
 
+MU_TEST(interpreter) {
+  // 1 + 42
+  spx_start = 0;
+  p_code = empty_vector();
+  p_code_push(LDC);
+  p_code_push(1);
+  p_code_push(LDC);
+  p_code_push(42);
+  p_code_push(ADD);
+  p_code_push(STOP);
+  interpret();
+  mu_check(pilex_get(0) == 43);
+
+  // a := 42; 1
+  spx_start = 1;
+  p_code = empty_vector();
+  p_code_push(LDA);
+  p_code_push(0);
+  p_code_push(LDC);
+  p_code_push(42);
+  p_code_push(AFF);
+  p_code_push(LDC);
+  p_code_push(1);
+  p_code_push(STOP);
+  interpret();
+  mu_check(pilex_get(0) == 42);
+  mu_check(pilex_get(1) == 1);
+
+  // a := 10; b := 1;
+  spx_start = 2;
+  p_code = empty_vector();
+  p_code_push(LDA);
+  p_code_push(0);
+  p_code_push(LDC);
+  p_code_push(10);
+  p_code_push(AFF);
+  p_code_push(LDA);
+  p_code_push(1);
+  p_code_push(LDC);
+  p_code_push(1);
+  p_code_push(AFF);
+  // if a > 0 then b := b * 2; a := a - 1;
+  p_code_push(LDV);
+  p_code_push(0);
+  p_code_push(JIF);
+  p_code_push(32);
+  p_code_push(LDA);
+  p_code_push(1);
+  p_code_push(LDV);
+  p_code_push(1);
+  p_code_push(LDC);
+  p_code_push(2);
+  p_code_push(MULT);
+  p_code_push(AFF);
+  p_code_push(LDA);
+  p_code_push(0);
+  p_code_push(LDV);
+  p_code_push(0);
+  p_code_push(LDC);
+  p_code_push(1);
+  p_code_push(SUB);
+  p_code_push(AFF);
+  p_code_push(JMP);
+  p_code_push(10);
+  p_code_push(STOP);
+  interpret();
+  mu_check(pilex_get(0) == 0);
+  mu_check(pilex_get(1) == 1024);
+}
 
 int main() {
   MU_RUN_TEST(vectors);
@@ -244,6 +326,7 @@ int main() {
   MU_RUN_TEST(parser_g0);
   MU_RUN_TEST(lexer_gpl);
   MU_RUN_TEST(parser_gpl);
+  MU_RUN_TEST(interpreter);
   MU_REPORT();
   return 0;
 }
