@@ -129,11 +129,11 @@ int main(int argc, char **argv){
   printf("/*------------------ BUFFER ------------------*/\n");
 
   buffer = read_file(gpl_path);
-  printf("Buffer:\n%s\n", buffer);
+  /* printf("Buffer:\n%s\n", buffer); */
 
 
-  printf("/*------------------ LEXER_G0 ------------------*/\n");
-  test_lexer(buffer);
+  /* printf("/\*------------------ LEXER_G0 ------------------*\/\n"); */
+  /* test_lexer(buffer); */
 
 
   printf("/*------------------ PARSER_G0 ------------------*/\n");
@@ -141,14 +141,14 @@ int main(int argc, char **argv){
   test_parser();
 
 
-  printf("/*------------------ PGM ------------------*/\n");
+  //printf("/*------------------ PGM ------------------*/\n");
 
   pgm = read_file(pgm_path);
 
-  printf("Program:\n%s\n", pgm);
+  /* printf("Program:\n%s\n", pgm); */
 
-  printf("/*------------------ LEXER_GPL ------------------*/\n");
-  test_lexer_GPL(pgm);
+  /* printf("/\*------------------ LEXER_GPL ------------------*\/\n"); */
+  /* test_lexer_GPL(pgm); */
   init_scan(pgm);
 
   printf("/*------------------ PARSER_GPL ------------------*/\n");

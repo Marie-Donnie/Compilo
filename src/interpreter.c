@@ -16,6 +16,7 @@ void interpret(){
   char buf[MAX_BUF_SIZE];
 
   while (code != STOP){
+    print_pilex();
     code = p_code_get(c0);
     switch (code){
     case LDA:

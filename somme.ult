@@ -1,16 +1,13 @@
 var a;
 var b;
 var c;
-a := 1;
-b := 3;
-c := a;
-while (b > 0) do
-a := a + 1;
-b := b - 1;
-c := c + 1;
-;
-write a;
-write b;
-write c;
+var d;
 a := read;
-write a;
+b := read;
+c := a;
+d := b;
+while (d > 0) do
+c := c + 1;
+d := d - 1;
+;
+write c;
